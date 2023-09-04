@@ -6,7 +6,7 @@
 #    By: nicolas <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/21 15:02:08 by nicolas           #+#    #+#              #
-#    Updated: 2023/09/02 13:30:21 by nicolas          ###   ########.fr        #
+#    Updated: 2023/09/04 10:49:23 by nplieger         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 #* *                                 UTILS                                  * *#
 #* ************************************************************************** *#
 
-NAME			=			a.out
+NAME			=			btc
 CC				=			c++
 CFLAGS			=			-std=c++98 -pedantic
 RUN_PARAM		=			
@@ -27,7 +27,7 @@ SRCS_EXTENSION	=			.cpp
 SRCS_PATH		=			srcs
 MAIN_NAME		=			main
 
-SRCS_NAMES		=
+SRCS_NAMES		=			BitcoinExchange	\
 
 #* ************************************************************************** *#
 #* *                               INCLUDES                                 * *#
