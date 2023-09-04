@@ -6,7 +6,7 @@
 /*   By: nplieger <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 10:55:41 by nplieger          #+#    #+#             */
-/*   Updated: 2023/09/04 10:59:30 by nplieger         ###   ########.fr       */
+/*   Updated: 2023/09/04 18:20:47 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -34,6 +34,18 @@
 #define BCYAN "\033[1;36m"
 #define BGRAY "\033[1;37m"
 #define BWHITE "\033[1;0m"
+
+/* Bold */
+
+#define TBLACK "\033[2;30m"
+#define TRED "\033[2;31m"
+#define TGREEN "\033[2;32m"
+#define TYELLOW "\033[2;33m"
+#define TBLUE "\033[2;34m"
+#define TPURPLE "\033[2;35m"
+#define TCYAN "\033[2;36m"
+#define TGRAY "\033[2;37m"
+#define TWHITE "\033[2;0m"
 
 /* Underline */
 

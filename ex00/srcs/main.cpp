@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:29:55 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/04 11:19:28 by nplieger         ###   ########.fr       */
+/*   Updated: 2023/09/04 18:35:34 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "BitcoinExchange.hpp"
@@ -16,7 +16,7 @@ static bool	verifyArguments(int argc, char **argv)
 	if (argc != 1)
 	{
 		std::cerr << RED;
-		std::cerr << "Error: 1 argument expected, " << argc << " recieved.";
+		std::cerr << "Error: 1 argument expected, " << argc << " received.";
 		std::cerr << WHITE << std::endl;
 		return (1);
 	}
@@ -30,7 +30,7 @@ static bool	verifyArguments(int argc, char **argv)
 	return (0);
 }
 
-static bool	openFile(std::fstream &file, char *filename)
+static bool	openFile(std::ifstream &file, char *filename)
 {
 	file.open(filename);
 	if (file.fail())
@@ -47,11 +47,15 @@ static bool	openFile(std::fstream &file, char *filename)
 
 int	main(int argc, char **argv)
 {
-	std::fstream	file;
+	std::ifstream	file;
 
 	if (verifyArguments(--argc, ++argv))
 		return (1);
 	if (openFile(file, *argv))
 		return (1);
-	return (file.close(), 0);
+
+	BitcoinExchange	bt(file);
+
+	file.close();
+	return (0);
 }
