@@ -6,7 +6,7 @@
 #    By: nicolas <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/21 15:02:08 by nicolas           #+#    #+#              #
-#    Updated: 2023/09/05 08:46:08 by nplieger         ###   ########.fr        #
+#    Updated: 2023/09/05 14:56:39 by nplieger         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,8 +27,8 @@ SRCS_EXTENSION	=			.cpp
 SRCS_PATH		=			srcs
 MAIN_NAME		=			main
 
-SRCS_NAMES		=			BitcoinExchange	\
-							utils			\
+SRCS_NAMES		=			BitcoinExchange		\
+							inputUtils			\
 
 #* ************************************************************************** *#
 #* *                               INCLUDES                                 * *#

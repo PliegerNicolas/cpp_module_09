@@ -1,15 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.cpp                                          :+:      :+:    :+:   */
+/*   outputUtils.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nplieger <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/05 08:39:24 by nplieger          #+#    #+#             */
-/*   Updated: 2023/09/05 13:39:31 by nplieger         ###   ########.fr       */
+/*   Updated: 2023/09/05 14:58:16 by nplieger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "utils.hpp"
+#include "outputUtils.hpp"
 
 std::string	&trim(std::string &str)
 {
@@ -43,6 +43,14 @@ static void	isValidDate(const std::string &date)
 		else if (!std::isdigit(date[i]))
 			throw std::runtime_error("Error: bad input => " + date);
 	}
+
+	int	year = std::atoi(date.substr(0, 4).c_str());
+	int	month = std::atoi(date.substr(5, 2).c_str());
+	int	day = std::atoi(date.substr(8, 2).c_str());
+
+	if (year < 2009 && month < 1 && day < 3)
+		throw std::runtime_error("Error: bad input => " + date + " | BitCoin didn't exist yet.");
+
 }
 
 static void	isValidRate(const std::string &rate)
@@ -55,25 +63,24 @@ static void	isValidRate(const std::string &rate)
 		throw std::runtime_error("Error: too large a number => " + rate);
 }
 
-std::pair<std::string, double>	splitLine(const std::string &line)
+std::pair<std::string, double>	splitLine(const std::string &line, const char c)
 {
 	std::pair<std::string, double>	elements;
-	std::string						element;
+	std::string						date;
+	std::string						rate;
 	std::istringstream				ss(line);
 
-	if (std::getline(ss, element, '|'))
+	if (std::getline(ss, date, c))
 	{
-		element = trim(element);
-		isValidDate(element);
-		elements.first = element;
-		if (std::getline(ss, element, '|'))
-		{
-			element = trim(element);
-			isValidRate(element);
-			elements.second = stringToDouble(element);
-		}
+		date = trim(date);
+		if (std::getline(ss, rate, c))
+			rate = trim(rate);
 		else
 			throw std::runtime_error("Error: invalid line format, expected two elements");
+		isValidDate(date);
+		isValidRate(rate);
+		elements.first = date;
+		elements.second = stringToDouble(rate);
 	}
 	else
 		throw std::runtime_error("Error: invalid line format, expected at least one element");

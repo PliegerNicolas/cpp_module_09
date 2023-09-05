@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 18:18:48 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/05 13:46:12 by nplieger         ###   ########.fr       */
+/*   Updated: 2023/09/05 14:56:52 by nplieger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "BitcoinExchange.hpp"
@@ -31,8 +31,9 @@ BitcoinExchange::BitcoinExchange(std::ifstream &file)
 	if (!file.is_open())
 		throw std::runtime_error("File isn't open.");
 
-	std::string			line;
-	bool				firstLine = true;
+	std::string						line;
+	std::pair<std::string, double>	elements;
+	bool							firstLine = true;
 
 	while (std::getline(file, line))
 	{
@@ -40,13 +41,13 @@ BitcoinExchange::BitcoinExchange(std::ifstream &file)
 		{
 			if (firstLine)
 			{
+				firstLine = false;
 				line = trim(line);
-				if (line.compare(0, line.length(), "date | value") == 0
-					|| line.compare(0, line.length(), "Date | Value") == 0)
+				if (line.compare(0, line.length(), "date,exchange_rate") == 0)
 					continue ;
 			}
-			std::pair<std::string, double> elements;
-			elements = splitLine(line);
+			elements = splitLine(line, ',');
+			_map.insert(elements);
 		}
 		catch (const std::exception &e)
 		{
