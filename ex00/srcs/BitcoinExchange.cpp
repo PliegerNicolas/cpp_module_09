@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 18:18:48 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/05 14:56:52 by nplieger         ###   ########.fr       */
+/*   Updated: 2023/09/05 15:14:24 by nplieger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "BitcoinExchange.hpp"
@@ -35,9 +35,9 @@ BitcoinExchange::BitcoinExchange(std::ifstream &file)
 	std::pair<std::string, double>	elements;
 	bool							firstLine = true;
 
-	while (std::getline(file, line))
+	try
 	{
-		try
+		while (std::getline(file, line))
 		{
 			if (firstLine)
 			{
@@ -49,10 +49,10 @@ BitcoinExchange::BitcoinExchange(std::ifstream &file)
 			elements = splitLine(line, ',');
 			_map.insert(elements);
 		}
-		catch (const std::exception &e)
-		{
-			std::cerr << e.what() << std::endl;
-		}
+	}
+	catch (const std::exception &e)
+	{
+		std::cerr << e.what() << std::endl;
 	}
 }
 
@@ -86,6 +86,52 @@ BitcoinExchange::~BitcoinExchange(void)
 }
 
 /* Member Functions */
+
+std::ifstream	BitcoinExchange::openFile(const std::string &fileName) const
+{
+	std::ifstream	file;
+
+	file.open(fileName);
+	if (file.fail())
+	{
+		if (errno == EACCES)
+			throw std::runtime_error("Error: " + fileName + "isn't available.");
+		else
+			throw std::runtime_error("Error: " + fileName + "isn't available (permission denied).");
+	}
+	return (file);
+}
+
+
+void	BitcoinExchange::convertBitcoin(std::ifstream &file) const
+{
+	if (!file.is_open())
+		throw std::runtime_error("File isn't open.");
+
+	std::string						line;
+	std::pair<std::string, double>	elements;
+	bool							firstLine = true;
+
+	while (std::getline(file, line))
+	{
+		try
+		{
+			if (firstLine)
+			{
+				firstLine = false;
+				line = trim(line);
+				if (line.compare(0, line.length(), "date,exchange_rate") == 0)
+					continue ;
+			}
+			elements = splitLine(line, ',');
+			//_map.insert(elements);
+		}
+		catch (const std::exception &e)
+		{
+			std::cerr << e.what() << std::endl;
+		}
+	}
+}
 
 /* Public */
 
