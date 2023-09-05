@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 18:18:48 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/04 18:37:13 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/05 13:46:12 by nplieger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "BitcoinExchange.hpp"
@@ -31,16 +31,31 @@ BitcoinExchange::BitcoinExchange(std::ifstream &file)
 	if (!file.is_open())
 		throw std::runtime_error("File isn't open.");
 
-	std::string	line;
+	std::string			line;
+	bool				firstLine = true;
 
 	while (std::getline(file, line))
 	{
-		std::cout << line << std::endl;
-		// temp
+		try
+		{
+			if (firstLine)
+			{
+				line = trim(line);
+				if (line.compare(0, line.length(), "date | value") == 0
+					|| line.compare(0, line.length(), "Date | Value") == 0)
+					continue ;
+			}
+			std::pair<std::string, double> elements;
+			elements = splitLine(line);
+		}
+		catch (const std::exception &e)
+		{
+			std::cerr << e.what() << std::endl;
+		}
 	}
 }
 
-BitcoinExchange::BitcoinExchange(const BitcoinExchange &other)
+BitcoinExchange::BitcoinExchange(const BitcoinExchange &other): _map(other._map)
 {
 	std::cout << TCYAN;
 	std::cout << "BitcoinExchange : Copy constructor called";
@@ -57,7 +72,7 @@ BitcoinExchange	&BitcoinExchange::operator=(const BitcoinExchange &other)
 
 	if (this != &other)
 	{
-		(void)other;
+		_map = other._map;
 	}
 	return (*this);
 }

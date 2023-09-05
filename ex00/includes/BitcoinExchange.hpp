@@ -6,15 +6,17 @@
 /*   By: nplieger <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 10:48:54 by nplieger          #+#    #+#             */
-/*   Updated: 2023/09/04 18:36:29 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/05 09:13:50 by nplieger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
 
 #include "Colors.hpp"
+#include "utils.hpp"
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <map>
 
