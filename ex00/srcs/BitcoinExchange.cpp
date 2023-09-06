@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 18:18:48 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/06 20:19:46 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/06 20:28:55 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "BitcoinExchange.hpp"
@@ -284,6 +284,7 @@ void	BitcoinExchange::getAndPrintPrice(const std::string &dateStr, const std::st
 		if (it != _stocks.begin())
 		{
 			// previous date found.
+			it--;
 			std::cout << dateStr << " => " << value << " = " << value * it->second << std::endl;
 		}
 		else
