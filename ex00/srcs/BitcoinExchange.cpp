@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 18:18:48 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/06 11:59:03 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/06 13:37:26 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "BitcoinExchange.hpp"
@@ -34,7 +34,7 @@ BitcoinExchange::BitcoinExchange(const std::string &fileName):
 	try
 	{
 		_CSV = openFile(_fileName);
-		//setStock
+		fillStocks();
 	}
 	catch (const std::exception &e)
 	{
@@ -109,6 +109,18 @@ BitcoinExchange::~BitcoinExchange(void)
 
 /* Member Functions */
 
+void	BitcoinExchange::printStocks(void) const
+{
+	std::map<std::string, double>::const_iterator it = _stocks.begin();
+	std::map<std::string, double>::const_iterator it_end = _stocks.end();
+
+	while (it != it_end)
+	{
+		std::cout << it->first << " " << it->second << std::endl;
+		it++;
+	}
+}
+
 /* Public */
 
 // Getter functions
@@ -123,7 +135,7 @@ std::fstream	*BitcoinExchange::openFile(const std::string &fileName)
 {
 	std::fstream	*file = new std::fstream;
 
-	file->open(fileName.c_str());
+	file->open(fileName.c_str(), std::ios::in);
 	if (file->fail())
 	{
 		delete file;
@@ -139,5 +151,42 @@ std::fstream	*BitcoinExchange::openFile(const std::string &fileName)
 
 void	BitcoinExchange::fillStocks(void)
 {
-	
+	if (!_CSV || !_CSV->is_open())
+		return ;
+
+	std::string						line;
+	std::string						date_str;
+	std::string						rate_str;
+	double							rate;
+	bool							firstLine = true;
+
+	while (std::getline(*_CSV, line))
+	{
+		std::istringstream	linestream(line);
+
+		if (!std::getline(linestream, date_str, ','))
+			throw std::runtime_error("Error: <"
+				+ _fileName + " parsing> ',' expected.");
+		if (!std::getline(linestream, rate_str))
+			throw std::runtime_error("Error: <"
+				+ _fileName + " parsing> no newline found at end of line.");
+		if (firstLine
+			&& date_str.compare(0, date_str.length(), "date") == 0
+			&& rate_str.compare(0, rate_str.length(), "exchange_rate") == 0)
+		{
+			firstLine = false;
+			continue ;
+		}
+		try
+		{
+			isValidDate(date_str, '-');
+			isValidDouble(rate_str);
+			rate = std::strtod(rate_str.c_str(), NULL);
+			_stocks.insert(std::make_pair(date_str, rate));
+		}
+		catch (const std::exception &e)
+		{
+			std::cerr << e.what() << std::endl;
+		}
+	}
 }

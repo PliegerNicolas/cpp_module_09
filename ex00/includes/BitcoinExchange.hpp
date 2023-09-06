@@ -6,18 +6,20 @@
 /*   By: nplieger <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 10:48:54 by nplieger          #+#    #+#             */
-/*   Updated: 2023/09/06 11:31:08 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/06 13:35:37 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
 
 #include "Colors.hpp"
+#include "utils.hpp"
 
 #include <iostream>
 #include <string>
-
-#include <map>
 #include <fstream>
+#include <sstream>
+#include <cstdlib>
+#include <map>
 
 class	BitcoinExchange
 {
@@ -25,7 +27,7 @@ class	BitcoinExchange
 		/* Attributs */
 		std::string						_fileName;
 		std::fstream					*_CSV;
-		std::map<std::string, float>	_stocks;
+		std::map<std::string, double>	_stocks;
 
 		/* Constructors & Destructors */
 		
@@ -55,4 +57,6 @@ class	BitcoinExchange
 		~BitcoinExchange(void);
 
 		/* Member functions */
+
+		void	printStocks(void) const;
 };
