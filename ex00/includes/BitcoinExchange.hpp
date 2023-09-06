@@ -6,7 +6,7 @@
 /*   By: nplieger <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 10:48:54 by nplieger          #+#    #+#             */
-/*   Updated: 2023/09/06 14:01:32 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/06 19:47:52 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -24,6 +24,16 @@
 class	BitcoinExchange
 {
 	private:
+		/* Struct */
+		typedef void (BitcoinExchange::*ProcessFunction)(const std::string &, const std::string &);
+	
+		struct readFileData
+		{
+			std::string	dateTitle;
+			std::string	valueTitle;
+			char		separator;
+		};
+
 		/* Attributs */
 		const std::string				_stocksFileName;
 		std::fstream					*_CSV;
@@ -35,7 +45,12 @@ class	BitcoinExchange
 		/* Member functions */
 
 		std::fstream	*openFile(const std::string &fileName) const;
-		void			fillStocks(void);
+		void			readAndExecuteOnFile(std::fstream *file, ProcessFunction func,
+							const BitcoinExchange::readFileData &rfd);
+
+		void			fillStocks(const std::string &dateStr, const std::string &valueStr);
+		void			getAndPrintPrice(const std::string &dateStr, const std::string &valueStr);
+
 
 	protected:
 		/* Attributs */
@@ -58,5 +73,5 @@ class	BitcoinExchange
 		/* Member functions */
 
 		void	printStocks(void) const;
-		void	convert(const std::string &fileName) const;
+		void	convert(const std::string &fileName);
 };

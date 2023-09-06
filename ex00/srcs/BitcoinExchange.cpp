@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 18:18:48 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/06 14:02:21 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/06 20:18:43 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "BitcoinExchange.hpp"
@@ -26,7 +26,16 @@ BitcoinExchange::BitcoinExchange(void):
 	try
 	{
 		_CSV = openFile(_stocksFileName);
-		fillStocks();
+
+		ProcessFunction	func;
+		BitcoinExchange::readFileData	rfd;
+		
+		func = &BitcoinExchange::fillStocks;
+		rfd.dateTitle = "date";
+		rfd.valueTitle = "exchange_rate";
+		rfd.separator = ',';
+
+		readAndExecuteOnFile(_CSV, func, rfd);
 	}
 	catch (const std::exception &e)
 	{
@@ -112,8 +121,10 @@ void	BitcoinExchange::printStocks(void) const
 	}
 }
 
-void	BitcoinExchange::convert(const std::string &fileName) const
+void	BitcoinExchange::convert(const std::string &fileName)
 {
+	ProcessFunction	func;
+	BitcoinExchange::readFileData	rfd;
 	std::fstream	*file;
 
 	try
@@ -124,8 +135,33 @@ void	BitcoinExchange::convert(const std::string &fileName) const
 	{
 		std::cerr << e.what() << std::endl;
 	}
-	// continue here
-	delete file;
+
+	try
+	{
+		func = &BitcoinExchange::getAndPrintPrice;
+		rfd.dateTitle = "date";
+		rfd.valueTitle = "value";
+		rfd.separator = '|';
+
+		readAndExecuteOnFile(file, func, rfd);
+	}
+	catch (const std::exception &e)
+	{
+		if (file)
+		{
+			if (file->is_open())
+				file->close();
+			delete file;
+		}
+		std::cerr << e.what() << std::endl;
+	}
+
+	if (file)
+	{
+		if (file->is_open())
+			file->close();
+		delete file;
+	}
 }
 
 /* Public */
@@ -156,46 +192,102 @@ std::fstream	*BitcoinExchange::openFile(const std::string &fileName) const
 	return (file);
 }
 
-void	BitcoinExchange::fillStocks(void)
+void	BitcoinExchange::readAndExecuteOnFile(std::fstream *file, ProcessFunction func,
+	const BitcoinExchange::readFileData &rfd)
 {
-	if (!_CSV || !_CSV->is_open())
+	if (!file || !file->is_open())
 		return ;
 
 	std::string						line;
-	std::string						date_str;
-	std::string						rate_str;
-	double							rate;
-	bool							firstLine = true;
+	bool							firstLine;
 
-	while (std::getline(*_CSV, line))
+	std::string						dateStr;
+	std::string						valueStr;
+	
+	firstLine = true;
+	while (std::getline(*file, line))
 	{
 		std::istringstream	linestream(line);
 
-		if (!std::getline(linestream, date_str, ','))
-			throw std::runtime_error("Error: <"
-				+ _stocksFileName + " parsing> ',' expected.");
-		if (!std::getline(linestream, rate_str))
-			throw std::runtime_error("Error: <"
-				+ _stocksFileName + " parsing> no newline found at end of line.");
-		trimString(date_str);
-		trimString(rate_str);
-		if (firstLine
-			&& date_str.compare(0, date_str.length(), "date") == 0
-			&& rate_str.compare(0, rate_str.length(), "exchange_rate") == 0)
-		{
-			firstLine = false;
-			continue ;
-		}
 		try
 		{
-			isValidDate(date_str, '-');
-			isValidDouble(rate_str);
-			rate = std::strtod(rate_str.c_str(), NULL);
-			_stocks.insert(std::make_pair(date_str, rate));
+			// verify if dateStr and valueStr retrieval successful
+			if (!std::getline(linestream, dateStr, rfd.separator))
+				throw std::runtime_error("Error: bad input => '" + line + "'.");
+			if (!std::getline(linestream, valueStr))
+				throw std::runtime_error("Error: bad input => '" + line + "'.");
 		}
 		catch (const std::exception &e)
 		{
 			std::cerr << e.what() << std::endl;
+			continue ;
+		}
+
+		// trim retrieved strings
+		trimString(dateStr);
+		trimString(valueStr);
+
+		// filter out first line if needed
+		if (firstLine
+			&& dateStr.compare(0, dateStr.length(), rfd.dateTitle) == 0
+			&& valueStr.compare(0, valueStr.length(), rfd.valueTitle) == 0)
+		{
+			firstLine = false;
+			continue ;
+		}
+
+		// convert valueStr to double and execute passed function
+		try
+		{
+			(this->*func)(dateStr, valueStr);
+		}
+		catch(const std::exception &e)
+		{
+			std::cerr << e.what() << std::endl;
+		}
+	}
+}
+
+void	BitcoinExchange::fillStocks(const std::string &dateStr, const std::string &valueStr)
+{
+	double	value;
+
+	isValidDate(dateStr, '-', false);
+	isValidDouble(valueStr);
+	value = std::strtod(valueStr.c_str(), NULL);
+	_stocks.insert(std::make_pair(dateStr, value));
+}
+
+void	BitcoinExchange::getAndPrintPrice(const std::string &dateStr, const std::string &valueStr)
+{
+	double	value;
+	std::map<std::string, double>::const_iterator	it;
+
+	isValidDate(dateStr, '-', true);
+	isValidDouble(valueStr);
+	value = std::strtod(valueStr.c_str(), NULL);
+	if (value < 0)
+		throw std::runtime_error("Error: not a positive number.");
+	else if (value > 1000)
+		throw std::runtime_error("Error: too large a number (max 999).");
+
+	it = _stocks.find(dateStr);
+	if (it != _stocks.end())
+	{
+		// exact date found.
+		std::cout << dateStr << " => " << value << " = " << value * it->second << std::endl;
+	}
+	else
+	{
+		it = _stocks.lower_bound(dateStr);
+		if (it != _stocks.begin())
+		{
+			// previous date found.
+			std::cout << dateStr << " => " << value << " = " << value * it->second << std::endl;
+		}
+		else
+		{
+			throw std::runtime_error("Error: couldn't find related date data.");
 		}
 	}
 }
