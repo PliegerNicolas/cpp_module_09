@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 18:18:48 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/06 20:18:43 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/06 20:19:46 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "BitcoinExchange.hpp"
@@ -134,6 +134,7 @@ void	BitcoinExchange::convert(const std::string &fileName)
 	catch (const std::exception &e)
 	{
 		std::cerr << e.what() << std::endl;
+		return ;
 	}
 
 	try
