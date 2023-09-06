@@ -6,7 +6,7 @@
 /*   By: nplieger <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 10:48:54 by nplieger          #+#    #+#             */
-/*   Updated: 2023/09/06 13:35:37 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/06 14:01:32 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -25,17 +25,16 @@ class	BitcoinExchange
 {
 	private:
 		/* Attributs */
-		std::string						_fileName;
+		const std::string				_stocksFileName;
 		std::fstream					*_CSV;
 		std::map<std::string, double>	_stocks;
 
 		/* Constructors & Destructors */
 		
-		BitcoinExchange(void);
 
 		/* Member functions */
 
-		std::fstream	*openFile(const std::string &fileName);
+		std::fstream	*openFile(const std::string &fileName) const;
 		void			fillStocks(void);
 
 	protected:
@@ -49,7 +48,7 @@ class	BitcoinExchange
 		/* Attributs */
 
 		/* Constructors & Destructors */
-		BitcoinExchange(const std::string &fileName);
+		BitcoinExchange(void);
 
 		BitcoinExchange(const BitcoinExchange &other);
 		BitcoinExchange	&operator=(const BitcoinExchange &other);
@@ -59,4 +58,5 @@ class	BitcoinExchange
 		/* Member functions */
 
 		void	printStocks(void) const;
+		void	convert(const std::string &fileName) const;
 };

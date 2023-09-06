@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 13:29:55 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/06 13:37:59 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/06 13:53:38 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "BitcoinExchange.hpp"
@@ -35,10 +35,13 @@ int	main(int argc, char **argv)
 	if (verifyArguments(--argc, ++argv))
 		return (1);
 	
-	BitcoinExchange	bt1(*argv);
+	BitcoinExchange	bt1;
+	bt1.convert("data.txt");
+	/*
 	BitcoinExchange	bt2(bt1);
-	BitcoinExchange	bt3("Pomme");
-	bt2 = bt3;
+	BitcoinExchange bt3;
+	bt3 = bt2;
+	*/
 
 	return (0);
 }

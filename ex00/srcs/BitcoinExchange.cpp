@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 18:18:48 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/06 13:37:26 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/06 14:02:21 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "BitcoinExchange.hpp"
@@ -16,24 +16,16 @@
 /* Public */
 
 BitcoinExchange::BitcoinExchange(void):
-	_fileName(""),
+	_stocksFileName("data.csv"),
 	_CSV(NULL)
 {
 	std::cout << TCYAN;
 	std::cout << "BitcoinExchange : Default constructor called";
 	std::cout << WHITE << std::endl;
-}
-
-BitcoinExchange::BitcoinExchange(const std::string &fileName):
-	_fileName(fileName)
-{
-	std::cout << TCYAN;
-	std::cout << "BitcoinExchange : Constructor with file parameter called";
-	std::cout << WHITE << std::endl;
 
 	try
 	{
-		_CSV = openFile(_fileName);
+		_CSV = openFile(_stocksFileName);
 		fillStocks();
 	}
 	catch (const std::exception &e)
@@ -44,7 +36,7 @@ BitcoinExchange::BitcoinExchange(const std::string &fileName):
 }
 
 BitcoinExchange::BitcoinExchange(const BitcoinExchange &other):
-	_fileName(other._fileName),
+	_stocksFileName(other._stocksFileName),
 	_stocks(other._stocks)
 {
 	std::cout << TCYAN;
@@ -53,7 +45,7 @@ BitcoinExchange::BitcoinExchange(const BitcoinExchange &other):
 
 	try
 	{
-		_CSV = openFile(_fileName);
+		_CSV = openFile(_stocksFileName);
 	}
 	catch (const std::exception &e)
 	{
@@ -70,7 +62,6 @@ BitcoinExchange	&BitcoinExchange::operator=(const BitcoinExchange &other)
 
 	if (this != &other)
 	{
-		_fileName = other._fileName;
 		_stocks = other._stocks;
 		try
 		{
@@ -81,7 +72,7 @@ BitcoinExchange	&BitcoinExchange::operator=(const BitcoinExchange &other)
 				delete _CSV;
 				_CSV = NULL;
 			}
-			_CSV = openFile(_fileName);
+			_CSV = openFile(_stocksFileName);
 		}
 		catch (const std::exception &e)
 		{
@@ -121,6 +112,22 @@ void	BitcoinExchange::printStocks(void) const
 	}
 }
 
+void	BitcoinExchange::convert(const std::string &fileName) const
+{
+	std::fstream	*file;
+
+	try
+	{
+		file = openFile(fileName);
+	}
+	catch (const std::exception &e)
+	{
+		std::cerr << e.what() << std::endl;
+	}
+	// continue here
+	delete file;
+}
+
 /* Public */
 
 // Getter functions
@@ -131,7 +138,7 @@ void	BitcoinExchange::printStocks(void) const
 
 /* Member Functions */
 
-std::fstream	*BitcoinExchange::openFile(const std::string &fileName)
+std::fstream	*BitcoinExchange::openFile(const std::string &fileName) const
 {
 	std::fstream	*file = new std::fstream;
 
@@ -166,10 +173,12 @@ void	BitcoinExchange::fillStocks(void)
 
 		if (!std::getline(linestream, date_str, ','))
 			throw std::runtime_error("Error: <"
-				+ _fileName + " parsing> ',' expected.");
+				+ _stocksFileName + " parsing> ',' expected.");
 		if (!std::getline(linestream, rate_str))
 			throw std::runtime_error("Error: <"
-				+ _fileName + " parsing> no newline found at end of line.");
+				+ _stocksFileName + " parsing> no newline found at end of line.");
+		trimString(date_str);
+		trimString(rate_str);
 		if (firstLine
 			&& date_str.compare(0, date_str.length(), "date") == 0
 			&& rate_str.compare(0, rate_str.length(), "exchange_rate") == 0)

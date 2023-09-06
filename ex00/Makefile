@@ -6,7 +6,7 @@
 #    By: nicolas <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/21 15:02:08 by nicolas           #+#    #+#              #
-#    Updated: 2023/09/06 13:10:20 by nicolas          ###   ########.fr        #
+#    Updated: 2023/09/06 13:55:41 by nicolas          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,6 +30,7 @@ MAIN_NAME		=			main
 SRCS_NAMES		=			BitcoinExchange		\
 							isValidDate			\
 							isValidDouble		\
+							trimString			\
 
 #* ************************************************************************** *#
 #* *                               INCLUDES                                 * *#
