@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 09:44:08 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/07 11:10:26 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/07 11:28:44 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "RPN.hpp"
@@ -91,7 +91,7 @@ void	RPN::calculate(const std::string &expr)
 						break ;
 					case '/':
 						if (operand2 == 0)
-							throw std::runtime_error("Error: divison by zero impossible.");
+							throw std::runtime_error("Error: divison by zero.");
 						_stack.push(operand1 / operand2);
 						break ;
 				}
@@ -127,7 +127,7 @@ void	RPN::verifyExpression(const std::string &expr)
 	std::istringstream	exprStream(expr);
 	std::string			token;
 	int					operands_count;
-	int					number;
+	double				number;
 
 	operands_count = 0;
 	while (exprStream >> token)
@@ -135,19 +135,18 @@ void	RPN::verifyExpression(const std::string &expr)
 		if (token == "+" || token == "-" || token == "*" || token == "/")
 		{
 			if (operands_count < 2)
-				throw std::runtime_error("Error: not enough operands found before '"
-					+ token + "'.");
+				throw std::runtime_error("Error: too much operators.");
 			operands_count--;
 		}
 		else
 		{
 			std::istringstream	convertToNumStream(token);
 			if (!(convertToNumStream >> number))
-				throw std::runtime_error("Error: expected a digit but found '"
+				throw std::runtime_error("Error: expected a 'double' but found '"
 					+ token + "'.");
 			operands_count++;
 		}
 	}
 	if (operands_count != 1)
-		throw std::runtime_error("Error: multiple operands left after calculations.");
+		throw std::runtime_error("Error: not enough operators.");
 }
