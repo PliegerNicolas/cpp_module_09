@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 09:44:08 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/07 11:08:50 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/07 11:10:26 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "RPN.hpp"
@@ -60,10 +60,10 @@ void	RPN::calculate(const std::string &expr)
 {
 	std::istringstream	exprStream(expr);
 	std::string			token;
-	int					number;
+	double				number;
 
-	int					operand1;
-	int					operand2;
+	double				operand1;
+	double				operand2;
 
 	try
 	{

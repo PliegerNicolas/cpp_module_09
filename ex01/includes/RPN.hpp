@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 09:43:50 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/07 11:09:12 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/07 11:10:10 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -24,7 +24,7 @@ class	RPN
 		/* Types */
 
 		/* Attributs */
-		std::stack<int>	_stack;
+		std::stack<double>	_stack;
 
 		/* Constructors & Destructors */
 		RPN(const RPN &other);
