@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 11:17:28 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/13 18:59:05 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/13 20:26:41 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -42,9 +42,8 @@ class    APmergeMe
 		void						startTimer(void);
 		void						stopTimer(void);
 		double						getElapsedTime(void) const;
-
-		virtual void				toPairs(void) = 0;
-		virtual void				sortPairs(void) = 0;
+	
+		virtual void				toSortedPairs(void) = 0;
 
     public:
         /* Attributs */
@@ -54,6 +53,8 @@ class    APmergeMe
 		virtual ~APmergeMe(void);
 
         /* Member functions */
+		
+		virtual void				fordJohnsonSort(void) = 0;
 };
 
 #include "APmergeMe.tpp"

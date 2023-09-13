@@ -4,7 +4,7 @@
 
 template <typename T>
 MergeDeque<T>::MergeDeque(const std::string &values):
-	APmergeMe<T>()	
+	APmergeMe<T>()
 {
 	std::cout << CYAN;
 	std::cout << "MergeDeque : constructor with values parameter called";
@@ -16,11 +16,7 @@ MergeDeque<T>::MergeDeque(const std::string &values):
 	while (iss >> value)
 		_data.push_back(value);
 
-	APmergeMe<T>::startTimer();
-	toPairs();
-	sortPairs();
-	APmergeMe<T>::stopTimer();
-	std::cout << APmergeMe<T>::getElapsedTime() << std::endl;
+	fordJohnsonSort();
 }
 
 template <typename T>
@@ -75,29 +71,33 @@ MergeDeque<T>::MergeDeque(void):
 
 // Public
 
+template <typename T>
+void	MergeDeque<T>::fordJohnsonSort(void)
+{
+	APmergeMe<T>::startTimer();
+
+	// split and sort pairs
+	toSortedPairs();
+
+	APmergeMe<T>::stopTimer();
+	std::cout << "Vector = " << APmergeMe<T>::getElapsedTime() << " seconds" << std::endl;
+}
+
 // Protected
 
 template <typename T>
-void	MergeDeque<T>::toPairs(void)
+void	MergeDeque<T>::toSortedPairs(void)
 {
 	_pairs.clear();
 
-	unsigned long int	dataSize = _data.size();
-	if (dataSize % 2 != 0)
-		dataSize--;
+	typename std::deque<T>::iterator	it = _data.begin();
 
-	// Doesn't has access to .reserve() because doesn't has contiguous memory storage.
-
-	for (unsigned long int i = 0; i < dataSize; i += 2)
-		_pairs.push_back(std::pair<T, T>(_data[i], _data[i + 1]));
-}
-
-template <typename T>
-void	MergeDeque<T>::sortPairs(void)
-{
-	for (unsigned long int i = 0; i < _pairs.size(); ++i)
+	while (it < _data.end() - 1)
 	{
-		if (_pairs[i].first > _pairs[i].second)
-			std::swap(_pairs[i].first, _pairs[i].second);
+		if (*it > *(it + 1))
+			_pairs.push_back(std::pair<T, T>(*(it + 1), *it));
+		else
+			_pairs.push_back(std::pair<T, T>(*it, *(it + 1)));
+		it = _data.erase(it, it + 2);
 	}
 }
