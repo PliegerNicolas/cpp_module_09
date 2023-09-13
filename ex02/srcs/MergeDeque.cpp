@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 11:03:08 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/13 11:05:23 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/13 11:25:20 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "MergeDeque.hpp"
@@ -41,7 +41,7 @@ MergeDeque	&MergeDeque::operator=(const MergeDeque &other)
 
 	if (this != &other)
 	{
-		(void)other;
+		APmergeMe::operator=(other);
 	}
 	return (*this);
 }
