@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 11:03:08 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/13 11:25:20 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/13 17:07:56 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "MergeDeque.hpp"
@@ -15,22 +15,26 @@
 
 // Public
 
-MergeDeque::MergeDeque(void):
+MergeDeque::MergeDeque(const std::string &values):
 	APmergeMe()
 {
 	std::cout << CYAN;
-	std::cout << "MergeDeque : default constructor called";
+	std::cout << "MergeDeque : constructor with values parameter called";
 	std::cout << WHITE << std::endl;
+
+	std::istringstream	iss(values);
+	unsigned long int	nbr;
+
+	while (iss >> nbr)
+		_data.push_back(nbr);
 }
 
 MergeDeque::MergeDeque(const MergeDeque &other):
-	APmergeMe()
+	APmergeMe(other)
 {
 	std::cout << CYAN;
 	std::cout << "MergeDeque : copy constructor called";
 	std::cout << WHITE << std::endl;
-
-	(void)other;
 }
 
 MergeDeque	&MergeDeque::operator=(const MergeDeque &other)
@@ -56,3 +60,11 @@ MergeDeque::~MergeDeque(void)
 // Protected
 
 // Private
+
+MergeDeque::MergeDeque(void):
+	APmergeMe()
+{
+	std::cout << CYAN;
+	std::cout << "MergeDeque : default constructor called";
+	std::cout << WHITE << std::endl;
+}
