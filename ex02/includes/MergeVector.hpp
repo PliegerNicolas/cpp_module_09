@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 10:58:08 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/13 17:06:07 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/13 18:55:34 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -16,12 +16,13 @@
 #include <sstream>
 #include <vector>
 
-class    MergeVector: public APmergeMe<unsigned long int>
+template <typename T>
+class    MergeVector: public APmergeMe<T>
 {
     private:
         /* Attributs */
-		std::vector<unsigned long int>	_data;
-		std::vector<unsigned long int>	_pairs;
+		std::vector<T>					_data;
+		std::vector<std::pair<T, T> >	_pairs;
 
         /* Constructors & Destructors */
         MergeVector(void);
@@ -34,6 +35,9 @@ class    MergeVector: public APmergeMe<unsigned long int>
         /* Constructors & Destructors */
 
         /* Member functions */
+
+		void	toPairs(void);
+		void	sortPairs(void);
 
     public:
         /* Attributs */
@@ -49,3 +53,4 @@ class    MergeVector: public APmergeMe<unsigned long int>
         /* Member functions */
 };
 
+#include "MergeVector.tpp"

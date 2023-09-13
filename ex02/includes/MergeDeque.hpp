@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 10:58:08 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/13 17:08:11 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/13 18:55:29 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -16,12 +16,13 @@
 #include <sstream>
 #include <deque>
 
-class    MergeDeque: public APmergeMe<unsigned long int>
+template <typename T>
+class    MergeDeque: public APmergeMe<T>
 {
     private:
         /* Attributs */
-		std::deque<unsigned long int>   _data;
-		std::deque<unsigned long int>   _pairs;
+		std::deque<T>					_data;
+		std::deque<std::pair<T, T> >	_pairs;
 
         /* Constructors & Destructors */
         
@@ -35,6 +36,9 @@ class    MergeDeque: public APmergeMe<unsigned long int>
         /* Constructors & Destructors */
 
         /* Member functions */
+
+		void	toPairs(void);
+		void	sortPairs(void);
 
     public:
         /* Attributs */
@@ -50,3 +54,4 @@ class    MergeDeque: public APmergeMe<unsigned long int>
         /* Member functions */
 };
 
+#include "MergeDeque.tpp"

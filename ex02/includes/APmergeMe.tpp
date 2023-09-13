@@ -13,20 +13,19 @@ APmergeMe<T>::~APmergeMe(void)
 // Protected
 
 template <typename T>
-APmergeMe<T>::APmergeMe(void)
+APmergeMe<T>::APmergeMe(void):
+	_startTime(0),
+	_endTime(0)
 {
 	std::cout << CYAN;
 	std::cout << "APmergeMe : default constructor called";
 	std::cout << WHITE << std::endl;
-
-	startTimer();
-	_elapsedTime = _startTime;
 }
 
 template <typename T>
 APmergeMe<T>::APmergeMe(const APmergeMe &other):
 	_startTime(other._startTime),
-	_elapsedTime(other._elapsedTime)
+	_endTime(other._endTime)
 {
 	std::cout << CYAN;
 	std::cout << "APmergeMe : copy constructor called";
@@ -43,7 +42,7 @@ APmergeMe<T>	&APmergeMe<T>::operator=(const APmergeMe &other)
 	if (this != &other)
 	{
 		_startTime = other._startTime;
-		_elapsedTime = other._elapsedTime;
+		_endTime = other._endTime;
 	}
 	return (*this);
 }
@@ -70,14 +69,14 @@ void	APmergeMe<T>::startTimer(void)
 template <typename T>
 void	APmergeMe<T>::stopTimer(void)
 {
-	_elapsedTime = clock() - _startTime;
+	_endTime = clock();
 }
 
 template <typename T>
 double	APmergeMe<T>::getElapsedTime(void) const
 {
-	// In milliseconds
-	return (static_cast<double>(_elapsedTime) / CLOCKS_PER_SEC * 1000.0);
+	// In Seconds
+	return (static_cast<double>(_endTime - _startTime) / CLOCKS_PER_SEC);
 }
 
 // Private

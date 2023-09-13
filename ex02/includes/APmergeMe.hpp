@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 11:17:28 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/13 16:55:22 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/13 18:59:05 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -17,13 +17,11 @@
 #include <string>
 #include <ctime>
 
-template <typename Container>
+template <typename T>
 class    APmergeMe
 {
     private:
         /* Attributs */
-		clock_t		_startTime;
-		clock_t		_elapsedTime;
 
         /* Constructors & Destructors */
 
@@ -31,6 +29,8 @@ class    APmergeMe
 
     protected:
         /* Attributs */
+		clock_t		_startTime;
+		clock_t		_endTime;
 
         /* Constructors & Destructors */
 		APmergeMe(void);
@@ -39,9 +39,12 @@ class    APmergeMe
 		APmergeMe    &operator=(const APmergeMe &other);
 		
         /* Member functions */
-		void		startTimer(void);
-		void		stopTimer(void);
-		double		getElapsedTime(void) const;
+		void						startTimer(void);
+		void						stopTimer(void);
+		double						getElapsedTime(void) const;
+
+		virtual void				toPairs(void) = 0;
+		virtual void				sortPairs(void) = 0;
 
     public:
         /* Attributs */

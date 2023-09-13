@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 11:15:58 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/13 16:57:21 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/13 19:15:00 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "MergeVector.hpp"
@@ -36,8 +36,10 @@ int	main(int argc, char **argv)
 	if (verifyArguments(--argc, ++argv))
 		return (1);
 
-	MergeVector	vect(*argv);
-	MergeDeque	dequ(*argv);
+	MergeVector<unsigned long int>	vect(*argv);
+	MergeDeque<unsigned long int>	dequ(*argv);
 
+	MergeVector<unsigned long int>	a(vect);
+	MergeDeque<unsigned long int>	b(dequ);
 	return (0);
 }
