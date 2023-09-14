@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 10:58:08 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/14 23:30:42 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/15 01:13:44 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -63,6 +63,7 @@ class    MergeVector: public APmergeMe<T>
 		/* Constructors & Destructors */
 		MergeVector(void);
 		MergeVector(const std::string &values);
+		MergeVector(const size_t &argc, char **argv);
 
 		MergeVector(const MergeVector &other);
 		MergeVector    &operator=(const MergeVector &other);
@@ -78,6 +79,7 @@ class    MergeVector: public APmergeMe<T>
 
 		// Setter
 		void					setData(const std::string &values);
+		void					setData(const size_t &argc, char **argv);
 
 		// Other
 		const std::string		printVector(const std::vector<T> &vector) const;

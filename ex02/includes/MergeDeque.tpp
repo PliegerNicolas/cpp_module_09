@@ -27,6 +27,19 @@ MergeDeque<T>::MergeDeque(const std::string &values):
 }
 
 template <typename T>
+MergeDeque<T>::MergeDeque(const size_t &argc, char **argv):
+	APmergeMe<T>()
+{
+	if (DEBUG)
+	{
+		std::cout << CYAN;
+		std::cout << "MergeDeque : constructor with argv and argv parameter called";
+		std::cout << WHITE << std::endl;
+	}
+	setData(argc, argv);
+}
+
+template <typename T>
 MergeDeque<T>::MergeDeque(const MergeDeque &other):
 	APmergeMe<T>(other),
 	_data(other._data),
@@ -117,6 +130,25 @@ void	MergeDeque<T>::setData(const std::string &values)
 
 	while (iss >> value)
 		_data.push_back(value);
+}
+
+template <typename T>
+void	MergeDeque<T>::setData(const size_t &argc, char **argv)
+{
+	_data.clear();
+	_sorted.clear();
+
+	for (size_t i = 0; i < argc; i++)
+	{
+		std::istringstream	iss(argv[i]);
+		T					value;
+
+		if (iss >> value)
+			_data.push_back(value);
+		else
+			throw std::runtime_error(std::string(RED)
+				+ "Error: couldn't convert given string to expected type" + WHITE);
+	}
 }
 
 // Other

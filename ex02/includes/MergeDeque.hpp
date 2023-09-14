@@ -63,6 +63,7 @@ class    MergeDeque: public APmergeMe<T>
 		/* Constructors & Destructors */
 		MergeDeque(void);
 		MergeDeque(const std::string &values);
+		MergeDeque(const size_t &argc, char **argv);
 
 		MergeDeque(const MergeDeque &other);
 		MergeDeque    &operator=(const MergeDeque &other);
@@ -78,6 +79,7 @@ class    MergeDeque: public APmergeMe<T>
 
 		// Setter
 		void				setData(const std::string &values);
+		void				setData(const size_t &argc, char **argv);
 
 		// Other
 		const std::string	printDeque(const std::deque<T> &deque) const;

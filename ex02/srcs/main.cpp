@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 11:15:58 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/15 00:07:34 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/15 01:23:22 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "MergeVector.hpp"
@@ -14,7 +14,7 @@
 
 static bool	verifyArguments(int argc, char **argv)
 {
-	if (argc != 1)
+	if (argc <= 0)
 	{
 		std::cerr << RED;
 		std::cerr << "Error: 1 argument expected, " << argc << " received.";
@@ -67,8 +67,18 @@ int	main(int argc, char **argv)
 		return (1);
 
 	{
-		MergeVector<size_t>	vect(*argv);
-		MergeDeque<size_t>	deque(*argv);
+		MergeVector<size_t>	vect;
+		MergeDeque<size_t>	deque;
+		if (argc > 1)
+		{
+			vect.setData(argc, argv);
+			deque.setData(argc, argv);
+		}
+		else
+		{
+			vect.setData(*argv);
+			deque.setData(*argv);
+		}
 
 		vect.fordJohnsonSort();
 		deque.fordJohnsonSort();
