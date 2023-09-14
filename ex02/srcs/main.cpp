@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 11:15:58 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/15 01:23:22 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/15 01:28:20 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "MergeVector.hpp"
@@ -61,14 +61,11 @@ static void	displayResults(MergeVector<T> vect, MergeDeque<T> deque)
 	std::cout << CYAN << "." << WHITE << std::endl;
 }
 
-int	main(int argc, char **argv)
+template <typename T>
+static void	testValues(const int &argc, char **argv)
 {
-	if (verifyArguments(--argc, ++argv))
-		return (1);
-
-	{
-		MergeVector<size_t>	vect;
-		MergeDeque<size_t>	deque;
+		MergeVector<T>	vect;
+		MergeDeque<T>	deque;
 		if (argc > 1)
 		{
 			vect.setData(argc, argv);
@@ -84,17 +81,16 @@ int	main(int argc, char **argv)
 		deque.fordJohnsonSort();
 
 		displayResults(vect, deque);
-	}
-	std::cout << std::endl;
-	{
-		MergeVector<int>	vect("-1 5 2 7 0 10 -5 5 -2560");
-		MergeDeque<int>		deque("-1 5 2 7 0 10 -5 5 -2560");
+}
 
-		vect.fordJohnsonSort();
-		deque.fordJohnsonSort();
+int	main(int argc, char **argv)
+{
+	if (verifyArguments(--argc, ++argv))
+		return (1);
 
-		displayResults(vect, deque);
-	}
+	testValues<size_t>(argc, argv);
+	//std::cout << std::endl;
+	//testValues<int>(argc, argv);
 
 	return (0);
 }
