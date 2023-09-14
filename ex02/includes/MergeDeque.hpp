@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 10:58:08 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/13 20:35:21 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/14 23:06:03 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -20,39 +20,66 @@ template <typename T>
 class    MergeDeque: public APmergeMe<T>
 {
     private:
-        /* Attributs */
+		/* Attributs */
 		std::deque<T>					_data;
+		
 		std::deque<std::pair<T, T> >	_pairs;
-		std::deque<std::pair<T, T> >	_mainChain;
-		std::deque<std::pair<T, T> >	_pendElements;
 
-        /* Constructors & Destructors */
-        
-		MergeDeque(void);
+		std::deque<T>					_sorted;
+		std::deque<T>					_pendingElements;
 
-        /* Member functions */
+		std::deque<T>					_jacobsthalSequence;
+
+		/* Constructors & Destructors */
+
+		/* Member functions */
+
+		// Getter
+		
+		// Setter
+
+		// Other
+
+		const std::string	printdeque(const std::deque<T> &deque) const;
+
+		void				toSortedPairs(void);
+
+		void				mergeSort(size_t begin, size_t end);
+		void				merge(size_t begin, size_t middle, size_t end);
+		void				generateSortedAndPending(void);
+
+		void				insertPendingElements(void);
+		void				generateJacobsthalSequence(void);
+		size_t				lowerboundBinarySearch(const std::deque<T> &arr, const T &target);
 
     protected:
-        /* Attributs */
+		/* Attributs */
 
-        /* Constructors & Destructors */
+		/* Constructors & Destructors */
 
-        /* Member functions */
-
-		void	toSortedPairs(void);
+		/* Member functions */
 
     public:
-        /* Attributs */
+		/* Attributs */
 
-        /* Constructors & Destructors */
-        MergeDeque(const std::string &values);
+		/* Constructors & Destructors */
+		MergeDeque(void);
+		MergeDeque(const std::string &values);
 
-        MergeDeque(const MergeDeque &other);
-        MergeDeque    &operator=(const MergeDeque &other);
+		MergeDeque(const MergeDeque &other);
+		MergeDeque    &operator=(const MergeDeque &other);
 
-        ~MergeDeque(void);
+		~MergeDeque(void);
 
-        /* Member functions */
+		/* Member functions */
+
+		// Getter
+		size_t	getDataSize(void) const;
+
+		// Setter
+		void	setData(const std::string &values);
+
+		// Other
 		void	fordJohnsonSort(void);
 };
 

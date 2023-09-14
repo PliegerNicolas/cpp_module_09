@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 10:58:08 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/14 19:54:55 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/14 23:05:57 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -20,47 +20,66 @@ template <typename T>
 class    MergeVector: public APmergeMe<T>
 {
     private:
-        /* Attributs */
+		/* Attributs */
 		std::vector<T>					_data;
+		
+		std::vector<std::pair<T, T> >	_pairs;
 
 		std::vector<T>					_sorted;
 		std::vector<T>					_pendingElements;
 
-		std::vector<std::pair<T, T> >	_pairs;
+		std::vector<T>					_jacobsthalSequence;
 
-        /* Constructors & Destructors */
-        MergeVector(void);
+		/* Constructors & Destructors */
 
-        /* Member functions */
+		/* Member functions */
+
+		// Getter
+		
+		// Setter
+
+		// Other
+
+		const std::string	printVector(const std::vector<T> &vector) const;
+
+		void				toSortedPairs(void);
+
+		void				mergeSort(size_t begin, size_t end);
+		void				merge(size_t begin, size_t middle, size_t end);
+		void				generateSortedAndPending(void);
+
+		void				insertPendingElements(void);
+		void				generateJacobsthalSequence(void);
+		size_t				lowerboundBinarySearch(const std::vector<T> &arr, const T &target);
 
     protected:
-        /* Attributs */
+		/* Attributs */
 
-        /* Constructors & Destructors */
+		/* Constructors & Destructors */
 
-        /* Member functions */
-
-		void	toSortedPairs(void);
-		void	separatePairs(void);
-
-		void	mergeSort(size_t begin, size_t end);
-		void	merge(size_t begin, size_t middle, size_t end);
-		void	generateSortedAndPending(void);
-
-		size_t	lowerboundBinarySearch(const std::vector<T> &arr, const T &target);
+		/* Member functions */
 
     public:
-        /* Attributs */
+		/* Attributs */
 
-        /* Constructors & Destructors */
+		/* Constructors & Destructors */
+		MergeVector(void);
 		MergeVector(const std::string &values);
 
-        MergeVector(const MergeVector &other);
-        MergeVector    &operator=(const MergeVector &other);
+		MergeVector(const MergeVector &other);
+		MergeVector    &operator=(const MergeVector &other);
 
-        ~MergeVector(void);
+		~MergeVector(void);
 
-        /* Member functions */
+		/* Member functions */
+
+		// Getter
+		size_t	getDataSize(void) const;
+
+		// Setter
+		void	setData(const std::string &values);
+
+		// Other
 		void	fordJohnsonSort(void);
 };
 

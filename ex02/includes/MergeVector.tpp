@@ -3,29 +3,40 @@
 // Public
 
 template <typename T>
+MergeVector<T>::MergeVector(void):
+	APmergeMe<T>()
+{
+	if (!DEBUG)
+		return ;
+	std::cout << CYAN;
+	std::cout << "MergeVector : default constructor called";
+	std::cout << WHITE << std::endl;
+}
+
+template <typename T>
 MergeVector<T>::MergeVector(const std::string &values):
 	APmergeMe<T>()
 {
-	std::cout << CYAN;
-	std::cout << "MergeVector : constructor with values parameter called";
-	std::cout << WHITE << std::endl;
-
-	std::istringstream	iss(values);
-	T					value;
-
-	while (iss >> value)
-		_data.push_back(value);
-
-	fordJohnsonSort();
+	if (DEBUG)
+	{
+		std::cout << CYAN;
+		std::cout << "MergeVector : constructor with values parameter called";
+		std::cout << WHITE << std::endl;
+	}
+	setData(values);
 }
 
 template <typename T>
 MergeVector<T>::MergeVector(const MergeVector &other):
 	APmergeMe<T>(other),
 	_data(other._data),
+	_pairs(other._pairs),
 	_sorted(other._sorted),
-	_pairs(other._pairs)
+	_pendingElements(other._pendingElements),
+	_jacobsthalSequence(other._jacobsthalSequence)
 {
+	if (!DEBUG)
+		return ;
 	std::cout << CYAN;
 	std::cout << "MergeVector : copy constructor called";
 	std::cout << WHITE << std::endl;
@@ -34,16 +45,21 @@ MergeVector<T>::MergeVector(const MergeVector &other):
 template <typename T>
 MergeVector<T>	&MergeVector<T>::operator=(const MergeVector &other)
 {
-	std::cout << CYAN;
-	std::cout << "MergeVector : assignment operator called";
-	std::cout << WHITE << std::endl;
+	if (DEBUG)
+	{
+		std::cout << CYAN;
+		std::cout << "MergeVector : assignment operator called";
+		std::cout << WHITE << std::endl;
+	}
 
 	if (this != &other)
 	{
 		APmergeMe<T>::operator=(other);
 		_data = other._data;
-		_sorted = other._sorted;
 		_pairs = other._pairs;
+		_sorted = other._sorted;
+		_pendingElements = other._pendingElements;
+		_jacobsthalSequence = other._jacobsthalSequence;
 	}
 	return (*this);
 }
@@ -51,6 +67,8 @@ MergeVector<T>	&MergeVector<T>::operator=(const MergeVector &other)
 template <typename T>
 MergeVector<T>::~MergeVector(void)
 {
+	if (!DEBUG)
+		return ;
 	std::cout << CYAN;
 	std::cout << "MergeVector : default destructor called";
 	std::cout << WHITE << std::endl;
@@ -60,58 +78,102 @@ MergeVector<T>::~MergeVector(void)
 
 // Private
 
-template <typename T>
-MergeVector<T>::MergeVector(void):
-	APmergeMe<T>()
-{
-	std::cout << CYAN;
-	std::cout << "MergeVector : default constructor called";
-	std::cout << WHITE << std::endl;
-}
-
 /* Member functions */
 
 // Public
 
+// Getter
+
+template <typename T>
+size_t	MergeVector<T>::getDataSize(void) const
+{
+	return (_data.size());
+}
+
+// Setter
+
+template <typename T>
+void	MergeVector<T>::setData(const std::string &values)
+{
+	std::istringstream	iss(values);
+	T					value;
+
+	_data.clear();
+	_sorted.clear();
+
+	while (iss >> value)
+		_data.push_back(value);
+}
+
+// Other
+
 template <typename T>
 void	MergeVector<T>::fordJohnsonSort(void)
 {
-	_pairs.clear();
-	_sorted.clear();
-	_pendingElements.clear();
-
-	_sorted.reserve((_data.size() / 2) + 1);
-	if (_data.size() % 2 != 0)
-		_pendingElements.reserve(_data.size() / 2);
-	else
-		_pendingElements.reserve((_data.size() / 2) - 1);
-
-	// .reserve() maybe for later
+	if (_data.size() == 0)
+		throw std::runtime_error(std::string(RED)
+			+ "Error: nothing to sort. Use .setData(\"[...]\")." + WHITE);
 
 	/* Start timer */
 	APmergeMe<T>::startTimer();
 
-	/* Step 1 & 2:	[n comparisons] Split data into pairs and sort the elements of		*/
-	/*			these pairs with each other.											*/
-	toSortedPairs();
+	if (_data.size() > 1)
+	{
+		/* Step 1 & 2:	[n comparisons] Split data into pairs and sort the elements of		*/
+		/*			these pairs with each other.											*/
+		toSortedPairs();
 
-	/* Step 3 & 4:	[n / 2 comparisons] Recursivly sort the pairs and build '_sorted'	*/
-	/*				also known as 'S' in Wikipedia and _pendingElements, the unsorted	*/
-	/*				values left. 'S' contains n/2 elements. It also inserts at the		*/
-	/*				start of S the element that was paired with the first and smallest	*/
-	/*				element of 'S'.														*/
-	mergeSort(0, _pairs.size() - 1);
-	generateSortedAndPending();
+		/* Step 3 & 4:	[n / 2 comparisons] Recursivly sort the pairs and build '_sorted'	*/
+		/*				also known as 'S' in Wikipedia and _pendingElements, the unsorted	*/
+		/*				values left. 'S' contains n/2 elements. It also inserts at the		*/
+		/*				start of S the element that was paired with the first and smallest	*/
+		/*				element of 'S'.														*/
+		mergeSort(0, _pairs.size() - 1);
+		generateSortedAndPending();
 
+		/* Step 5:	insert the remaining [n/2] elements via binary search and jacobsthal	*/
+		/*			sequence.																*/
+		insertPendingElements();
+	}
+	else
+		_sorted = _data;
 	// End timer
 	APmergeMe<T>::stopTimer();
-
-	std::cout << "Vector = " << APmergeMe<T>::getElapsedTime() << " seconds" << std::endl;
 }
 
 // Protected
 
-// Step 1
+// Private
+
+/*
+template <typename T>
+void	MergeVector<T>::printResults(void) const
+{
+	std::cout << CYAN << "Time to process a range of " << WHITE << std::setw(5) << _data.size();
+	std::cout << CYAN << " elements with ";
+	std::cout << WHITE << "std::vector" << CYAN << " : " << WHITE;
+	std::cout << std::setprecision(8) << APmergeMe<T>::getElapsedTime() << " ms";
+	std::cout << CYAN << "." << WHITE << std::endl;
+}
+*/
+
+template <typename T>
+const std::string	MergeVector<T>::printVector(const std::vector<T> &vector) const
+{
+	std::stringstream	ss;
+
+	ss << "{";
+	for (size_t i = 0; i < vector.size(); i++)
+	{
+		ss << vector[i];
+		if (i < vector.size() - 1)
+			ss << ", ";
+	}
+	ss << "}";
+	return (ss.str());
+}
+
+// Step 1 & 2
 
 template <typename T>
 void	MergeVector<T>::toSortedPairs(void)
@@ -141,7 +203,7 @@ void	MergeVector<T>::toSortedPairs(void)
 	}
 }
 
-// Step 2
+// Step 3 & 4
 
 template <typename T>
 void	MergeVector<T>::mergeSort(size_t begin, size_t end)
@@ -190,10 +252,26 @@ void	MergeVector<T>::generateSortedAndPending(void)
 	if (_pairs.empty())
 		return ;
 
+	_sorted.clear();
+
+	_sorted.reserve((_data.size() / 2) + 1);
+	if (_data.size() % 2 != 0)
+		_pendingElements.reserve(_data.size() / 2);
+	else
+		_pendingElements.reserve((_data.size() / 2) - 1);
+
 	if (_pairs.size() > 0)
 	{
-		_sorted.push_back(_pairs[0].second);
-		_sorted.push_back(_pairs[0].first);
+		if (_pairs[0].first < _pairs[0].second)
+		{
+			_sorted.push_back(_pairs[0].first);
+			_pendingElements.push_back(_pairs[0].second);
+		}
+		else
+		{
+			_sorted.push_back(_pairs[0].second);
+			_pendingElements.push_back(_pairs[0].first);
+		}
 	}
 
 	for (size_t i = 1; i < _pairs.size(); i++)
@@ -212,22 +290,67 @@ void	MergeVector<T>::generateSortedAndPending(void)
 	_pairs.clear();
 }
 
-// ----------
+// Step 5
+
+template <typename T>
+void	MergeVector<T>::insertPendingElements(void)
+{
+	generateJacobsthalSequence();
+
+	size_t	jacobsthalIdx = 0;
+	size_t	sortedIdx = 0;
+	typename std::vector<T>::iterator	insertionPos;
+
+	for (size_t i = 0; i < _pendingElements.size(); i++)
+	{
+		if (jacobsthalIdx < _jacobsthalSequence.size()
+			&& sortedIdx == _jacobsthalSequence[jacobsthalIdx])
+		{
+			jacobsthalIdx++;
+		}
+
+		insertionPos = _sorted.begin() + lowerboundBinarySearch(_sorted, _pendingElements[i]);
+		_sorted.insert(insertionPos, _pendingElements[i]);
+		sortedIdx++;
+	}
+
+	_pendingElements.clear();
+}
+
+template <typename T>
+void	MergeVector<T>::generateJacobsthalSequence(void)
+{
+	size_t	size = _pendingElements.size();
+
+	if (_jacobsthalSequence.size() >= size)
+		return ;
+
+	_jacobsthalSequence.reserve(size);
+
+	size_t	index = 3;
+	size_t	jacobsthalValue;
+
+	while ((jacobsthalValue = APmergeMe<T>::getJacobsthalValue(index++)) < size - 1)
+		_jacobsthalSequence.push_back(jacobsthalValue);
+}
 
 template <typename T>
 size_t	MergeVector<T>::lowerboundBinarySearch(const std::vector<T> &arr, const T &target)
 {
 	size_t	left = 0;
 	size_t	right = arr.size();
-	size_t	middle;
 	size_t	result = arr.size();
+	size_t	middle;
 
 	while (left < right)
 	{
 		middle = left + (right - left) / 2;
 
 		if (arr[middle] == target)
-			return (middle);
+		{
+			result = middle;
+			right = middle;
+		}
 		else if (arr[middle] < target)
 			left = middle + 1;
 		else
@@ -238,5 +361,3 @@ size_t	MergeVector<T>::lowerboundBinarySearch(const std::vector<T> &arr, const T
 	}
 	return (result);
 }
-
-// Private
