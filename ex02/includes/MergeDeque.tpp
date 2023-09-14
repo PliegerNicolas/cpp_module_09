@@ -87,6 +87,18 @@ MergeDeque<T>::~MergeDeque(void)
 // Getter
 
 template <typename T>
+const std::deque<T>	&MergeDeque<T>::getData(void) const
+{
+	return (_data);
+}
+
+template <typename T>
+const std::deque<T>	&MergeDeque<T>::getSorted(void) const
+{
+	return (_sorted);
+}
+
+template <typename T>
 size_t	MergeDeque<T>::getDataSize(void) const
 {
 	return (_data.size());
@@ -108,6 +120,22 @@ void	MergeDeque<T>::setData(const std::string &values)
 }
 
 // Other
+
+template <typename T>
+const std::string	MergeDeque<T>::printDeque(const std::deque<T> &deque) const
+{
+	std::stringstream	ss;
+
+	ss << "{";
+	for (size_t i = 0; i < deque.size(); i++)
+	{
+		ss << deque[i];
+		if (i < deque.size() - 1)
+			ss << ", ";
+	}
+	ss << "}";
+	return (ss.str());
+}
 
 template <typename T>
 void	MergeDeque<T>::fordJohnsonSort(void)
@@ -146,22 +174,6 @@ void	MergeDeque<T>::fordJohnsonSort(void)
 // Protected
 
 // Private
-
-template <typename T>
-const std::string	MergeDeque<T>::printdeque(const std::deque<T> &deque) const
-{
-	std::stringstream	ss;
-
-	ss << "{";
-	for (size_t i = 0; i < deque.size(); i++)
-	{
-		ss << deque[i];
-		if (i < deque.size() - 1)
-			ss << ", ";
-	}
-	ss << "}";
-	return (ss.str());
-}
 
 // Step 1 & 2
 
@@ -286,7 +298,7 @@ void	MergeDeque<T>::insertPendingElements(void)
 	for (size_t i = 0; i < _pendingElements.size(); i++)
 	{
 		if (jacobsthalIdx < _jacobsthalSequence.size()
-			&& sortedIdx == _jacobsthalSequence[jacobsthalIdx])
+			&& sortedIdx == static_cast<size_t>(_jacobsthalSequence[jacobsthalIdx]))
 		{
 			jacobsthalIdx++;
 		}

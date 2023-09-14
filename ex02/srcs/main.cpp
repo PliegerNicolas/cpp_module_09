@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 11:15:58 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/14 23:15:28 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/14 23:47:02 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "MergeVector.hpp"
@@ -25,19 +25,66 @@ static bool	verifyArguments(int argc, char **argv)
 	return (0);
 }
 
+template <typename T>
+static void	displayResults(MergeVector<T> vect, MergeDeque<T> deque)
+{
+	std::cout << YELLOW << "std::vector" << WHITE << std::endl;
+	std::cout << CYAN;
+	std::cout << "Before:  " << WHITE << vect.printVector(vect.getData());
+	std::cout << std::endl;
+	std::cout << CYAN;
+	std::cout << "After:   " << WHITE << vect.printVector(vect.getSorted());
+	std::cout << std::endl;
+
+	std::cout << YELLOW << "std::deque" << WHITE << std::endl;
+	std::cout << CYAN;
+	std::cout << "Before:  " << WHITE << deque.printDeque(deque.getData());
+	std::cout << std::endl;
+	std::cout << CYAN;
+	std::cout << "After:   " << WHITE << deque.printDeque(deque.getSorted());
+	std::cout << std::endl;
+
+	std::cout << std::endl;
+
+	std::cout << CYAN << "time to process a range of ";
+	std::cout << WHITE << std::setw(5) << vect.getDataSize();
+	std::cout << CYAN << " elements with ";
+	std::cout << WHITE << "std::vector" << CYAN << " : " << WHITE;
+	std::cout << std::setprecision(8) << vect.getElapsedTime() << " ms";
+	std::cout << CYAN << "." << WHITE << std::endl;
+
+	std::cout << CYAN << "time to process a range of ";
+	std::cout << WHITE << std::setw(5) << deque.getDataSize();
+	std::cout << CYAN << " elements with ";
+	std::cout << WHITE << "std::deque" << CYAN << " : " << WHITE;
+	std::cout << std::setprecision(8) << deque.getElapsedTime() << " ms";
+	std::cout << CYAN << "." << WHITE << std::endl;
+}
+
 int	main(int argc, char **argv)
 {
 	if (verifyArguments(--argc, ++argv))
 		return (1);
 
-	MergeVector<size_t>	vect(*argv);
-	MergeDeque<size_t>	deque(*argv);
+	{
+		MergeVector<size_t>	vect(*argv);
+		MergeDeque<size_t>	deque(*argv);
 
-	vect.fordJohnsonSort();
-	deque.fordJohnsonSort();
-	
-	std::cout << "vect : " << vect.getElapsedTime() << "ms" << std::endl;
-	std::cout << "deque : " << deque.getElapsedTime() << "ms" << std::endl;
+		vect.fordJohnsonSort();
+		deque.fordJohnsonSort();
+
+		displayResults(vect, deque);
+	}
+	std::cout << std::endl;
+	{
+		MergeVector<int>	vect("-1 5 2 7 0 10 -5 5 -2560");
+		MergeDeque<int>		deque("-1 5 2 7 0 10 -5 5 -2560");
+
+		vect.fordJohnsonSort();
+		deque.fordJohnsonSort();
+
+		displayResults(vect, deque);
+	}
 
 	return (0);
 }

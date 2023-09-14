@@ -85,6 +85,18 @@ MergeVector<T>::~MergeVector(void)
 // Getter
 
 template <typename T>
+const std::vector<T>	&MergeVector<T>::getData(void) const
+{
+	return (_data);
+}
+
+template <typename T>
+const std::vector<T>	&MergeVector<T>::getSorted(void) const
+{
+	return (_sorted);
+}
+
+template <typename T>
 size_t	MergeVector<T>::getDataSize(void) const
 {
 	return (_data.size());
@@ -106,6 +118,22 @@ void	MergeVector<T>::setData(const std::string &values)
 }
 
 // Other
+
+template <typename T>
+const std::string	MergeVector<T>::printVector(const std::vector<T> &vector) const
+{
+	std::stringstream	ss;
+
+	ss << "{";
+	for (size_t i = 0; i < vector.size(); i++)
+	{
+		ss << vector[i];
+		if (i < vector.size() - 1)
+			ss << ", ";
+	}
+	ss << "}";
+	return (ss.str());
+}
 
 template <typename T>
 void	MergeVector<T>::fordJohnsonSort(void)
@@ -144,34 +172,6 @@ void	MergeVector<T>::fordJohnsonSort(void)
 // Protected
 
 // Private
-
-/*
-template <typename T>
-void	MergeVector<T>::printResults(void) const
-{
-	std::cout << CYAN << "Time to process a range of " << WHITE << std::setw(5) << _data.size();
-	std::cout << CYAN << " elements with ";
-	std::cout << WHITE << "std::vector" << CYAN << " : " << WHITE;
-	std::cout << std::setprecision(8) << APmergeMe<T>::getElapsedTime() << " ms";
-	std::cout << CYAN << "." << WHITE << std::endl;
-}
-*/
-
-template <typename T>
-const std::string	MergeVector<T>::printVector(const std::vector<T> &vector) const
-{
-	std::stringstream	ss;
-
-	ss << "{";
-	for (size_t i = 0; i < vector.size(); i++)
-	{
-		ss << vector[i];
-		if (i < vector.size() - 1)
-			ss << ", ";
-	}
-	ss << "}";
-	return (ss.str());
-}
 
 // Step 1 & 2
 
@@ -304,7 +304,7 @@ void	MergeVector<T>::insertPendingElements(void)
 	for (size_t i = 0; i < _pendingElements.size(); i++)
 	{
 		if (jacobsthalIdx < _jacobsthalSequence.size()
-			&& sortedIdx == _jacobsthalSequence[jacobsthalIdx])
+			&& sortedIdx == static_cast<size_t>(_jacobsthalSequence[jacobsthalIdx]))
 		{
 			jacobsthalIdx++;
 		}

@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 10:58:08 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/14 23:06:03 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/14 23:34:44 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -40,8 +40,6 @@ class    MergeDeque: public APmergeMe<T>
 
 		// Other
 
-		const std::string	printdeque(const std::deque<T> &deque) const;
-
 		void				toSortedPairs(void);
 
 		void				mergeSort(size_t begin, size_t end);
@@ -74,13 +72,16 @@ class    MergeDeque: public APmergeMe<T>
 		/* Member functions */
 
 		// Getter
-		size_t	getDataSize(void) const;
+		const std::deque<T>	&getData(void) const;
+		const std::deque<T>	&getSorted(void) const;
+		size_t				getDataSize(void) const;
 
 		// Setter
-		void	setData(const std::string &values);
+		void				setData(const std::string &values);
 
 		// Other
-		void	fordJohnsonSort(void);
+		const std::string	printDeque(const std::deque<T> &deque) const;
+		void				fordJohnsonSort(void);
 };
 
 #include "MergeDeque.tpp"

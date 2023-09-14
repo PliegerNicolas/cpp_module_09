@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 10:58:08 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/14 23:05:57 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/14 23:30:42 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -40,8 +40,6 @@ class    MergeVector: public APmergeMe<T>
 
 		// Other
 
-		const std::string	printVector(const std::vector<T> &vector) const;
-
 		void				toSortedPairs(void);
 
 		void				mergeSort(size_t begin, size_t end);
@@ -74,13 +72,16 @@ class    MergeVector: public APmergeMe<T>
 		/* Member functions */
 
 		// Getter
-		size_t	getDataSize(void) const;
+		const std::vector<T>	&getData(void) const;
+		const std::vector<T>	&getSorted(void) const;
+		size_t					getDataSize(void) const;
 
 		// Setter
-		void	setData(const std::string &values);
+		void					setData(const std::string &values);
 
 		// Other
-		void	fordJohnsonSort(void);
+		const std::string		printVector(const std::vector<T> &vector) const;
+		void					fordJohnsonSort(void);
 };
 
 #include "MergeVector.tpp"
