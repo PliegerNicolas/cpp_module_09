@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 11:15:58 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/14 23:47:02 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/15 00:07:34 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "MergeVector.hpp"
@@ -46,14 +46,14 @@ static void	displayResults(MergeVector<T> vect, MergeDeque<T> deque)
 
 	std::cout << std::endl;
 
-	std::cout << CYAN << "time to process a range of ";
+	std::cout << CYAN << "Time to process a range of ";
 	std::cout << WHITE << std::setw(5) << vect.getDataSize();
 	std::cout << CYAN << " elements with ";
 	std::cout << WHITE << "std::vector" << CYAN << " : " << WHITE;
 	std::cout << std::setprecision(8) << vect.getElapsedTime() << " ms";
 	std::cout << CYAN << "." << WHITE << std::endl;
 
-	std::cout << CYAN << "time to process a range of ";
+	std::cout << CYAN << "Time to process a range of ";
 	std::cout << WHITE << std::setw(5) << deque.getDataSize();
 	std::cout << CYAN << " elements with ";
 	std::cout << WHITE << "std::deque" << CYAN << " : " << WHITE;
