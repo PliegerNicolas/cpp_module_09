@@ -128,6 +128,10 @@ void	MergeVector<T>::setData(const std::string &values)
 
 	while (iss >> value)
 		_data.push_back(value);
+	if (!iss.eof())
+		throw std::runtime_error(std::string(RED)
+			+ "Error: couldn't convert given string to expected type."
+			+ WHITE);
 }
 
 template <typename T>
@@ -141,11 +145,13 @@ void	MergeVector<T>::setData(const size_t &argc, char **argv)
 		std::istringstream	iss(argv[i]);
 		T					value;
 
-		if (iss >> value)
+		while (iss >> value)
 			_data.push_back(value);
-		else
+
+		if (!iss.eof())
 			throw std::runtime_error(std::string(RED)
-				+ "Error: couldn't convert given string to expected type" + WHITE);
+				+ "Error: couldn't convert given string to expected type."
+				+ WHITE);
 	}
 }
 
