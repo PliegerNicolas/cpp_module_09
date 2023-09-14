@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 11:15:58 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/15 01:28:20 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/15 01:39:00 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "MergeVector.hpp"
@@ -64,6 +64,8 @@ static void	displayResults(MergeVector<T> vect, MergeDeque<T> deque)
 template <typename T>
 static void	testValues(const int &argc, char **argv)
 {
+	try
+	{
 		MergeVector<T>	vect;
 		MergeDeque<T>	deque;
 		if (argc > 1)
@@ -81,6 +83,11 @@ static void	testValues(const int &argc, char **argv)
 		deque.fordJohnsonSort();
 
 		displayResults(vect, deque);
+	}
+	catch (const std::exception &e)
+	{
+		std::cerr << e.what() << std::endl;
+	}
 }
 
 int	main(int argc, char **argv)
