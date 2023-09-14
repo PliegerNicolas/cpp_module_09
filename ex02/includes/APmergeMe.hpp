@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 11:17:28 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/13 20:26:41 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/14 13:35:37 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -28,9 +28,17 @@ class    APmergeMe
         /* Member functions */
 
     protected:
+		struct straggler
+		{
+			bool	has;
+			T		value;
+		};
+
         /* Attributs */
 		clock_t		_startTime;
 		clock_t		_endTime;
+		
+		straggler	_straggler;
 
         /* Constructors & Destructors */
 		APmergeMe(void);
@@ -44,6 +52,8 @@ class    APmergeMe
 		double						getElapsedTime(void) const;
 	
 		virtual void				toSortedPairs(void) = 0;
+
+		unsigned long int			jacobsthal(unsigned long int n) const;
 
     public:
         /* Attributs */
