@@ -6,13 +6,13 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 11:17:28 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/14 23:05:51 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/15 22:54:51 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
 
 #include "debug.hpp"
-#include "Colors.hpp"
+#include "colors.hpp"
 
 #include <iostream>
 #include <iomanip>
