@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 11:15:58 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/16 19:27:09 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/16 19:41:33 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "PmergeMe.hpp"
@@ -26,29 +26,30 @@ static bool	verifyArguments(int argc, char **argv)
 }
 
 template <typename Container>
-static void	displayData(Container &container)
+static void	displayResults(Container &container, const std::string &containerType)
 {
-	std::cout << CYAN;
-	std::cout << "Before:  " << WHITE << container.printUnsortedData();
-	std::cout << std::endl;
-	std::cout << CYAN;
-	std::cout << "After:   " << WHITE << container.printSortedData();
-	std::cout << std::endl;
-}
+	std::cout << YELLOW << containerType << WHITE << std::endl;
+	std::cout << YELLOW << "{" << WHITE << std::endl;
 
-template <typename Container>
-static void	displayTime(Container &container, const std::string &containerType)
-{
-	std::cout << CYAN << "Time to process a range of ";
+	std::cout << CYAN;
+	std::cout << "	Before:  " << WHITE << container.printUnsortedData();
+	std::cout << std::endl;
+	std::cout << CYAN;
+	std::cout << "	After:   " << WHITE << container.printSortedData();
+	std::cout << std::endl;
+
+	std::cout << CYAN << "	Time to process a range of ";
 	std::cout << WHITE << std::setw(5) << container.getUnsortedData().size();
 	std::cout << CYAN << " elements with ";
 	std::cout << WHITE << containerType << CYAN << " : " << WHITE;
 	std::cout << std::setprecision(8) << container.getElapsedTime() << " ms";
 	std::cout << CYAN << "." << WHITE << std::endl;
+
+	std::cout << YELLOW << "}" << WHITE << std::endl;
 }
 
 template <typename Container>
-static void	initializePmergeMe(Container &container, const int &argc, char **argv)
+static void	execPmergeMe(Container &container, const int &argc, char **argv, const std::string &containerType)
 {
 	try
 	{
@@ -57,6 +58,7 @@ static void	initializePmergeMe(Container &container, const int &argc, char **arg
 		else
 			container.setUnsortedData(argv[1]);
 		container.fordJohnsonSort();
+		displayResults(container, containerType);
 	}
 	catch (const std::exception &e)
 	{
@@ -73,14 +75,11 @@ int	main(int argc, char **argv)
 	PmergeMe<double, std::deque>	dequ;
 	PmergeMe<int, std::list>		list;
 
-	initializePmergeMe(vect, argc, argv);
-	initializePmergeMe(dequ, argc, argv);
-	initializePmergeMe(list, argc, argv);
-
-	displayData(vect);
-	displayTime(vect, "std::vector");
-	displayTime(dequ, "std::deque");
-	displayTime(list, "std::list");
+	execPmergeMe(vect, argc, argv, "std::vector");
+	std::cout << std::endl;
+	execPmergeMe(dequ, argc, argv, "std::deque");
+	std::cout << std::endl;
+	execPmergeMe(list, argc, argv, "std::list");
 
 	return (0);
 }
