@@ -6,9 +6,54 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 11:15:58 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/15 01:39:00 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/16 02:44:07 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+#include "PmergeMe.hpp"
+
+static bool	verifyArguments(int argc, char **argv)
+{
+	if (argc <= 0)
+	{
+		std::cerr << RED;
+		std::cerr << "Error: 1 argument expected, " << argc << " received.";
+		std::cerr << WHITE << std::endl;
+		return (1);
+	}
+	(void)argv;
+	return (0);
+}
+
+int	main(int argc, char **argv)
+{
+	if (verifyArguments(argc, argv))
+		return (1);
+
+	PmergeMe<int, std::vector>		vectorPmerge;
+	PmergeMe<double, std::deque>	dequePmerge;
+	PmergeMe<size_t, std::list>		listPmerge;
+
+	return (0);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 #include "MergeVector.hpp"
 #include "MergeDeque.hpp"
 
@@ -101,3 +146,4 @@ int	main(int argc, char **argv)
 
 	return (0);
 }
+*/
