@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 11:15:58 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/16 19:41:33 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/16 19:55:50 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "PmergeMe.hpp"
@@ -14,10 +14,10 @@
 
 static bool	verifyArguments(int argc, char **argv)
 {
-	if (argc <= 0)
+	if (argc <= 1)
 	{
 		std::cerr << RED;
-		std::cerr << "Error: 1 argument expected, " << argc << " received.";
+		std::cerr << "Error: one or more arguments expected, " << argc - 1 << " received.";
 		std::cerr << WHITE << std::endl;
 		return (1);
 	}
