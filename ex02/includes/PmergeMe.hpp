@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 01:34:04 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/16 02:40:33 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/16 12:37:29 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -17,13 +17,15 @@
 #include <iostream>
 #include <string>
 #include <cstddef>
+#include <sstream>
+#include <ctime>
 
 #include <vector>
 #include <deque>
 #include <list>
 
-template <typename T, template <typename,
-	typename> class Container, typename Alloc = std::allocator<T> >
+template <typename T, template <typename, typename> class Container,
+	typename Alloc = std::allocator<T> >
 class    PmergeMe
 {
 	private:
@@ -50,6 +52,13 @@ class    PmergeMe
 
 		/* Member functions */
 
+		void						startTimer(void);
+		void						stopTimer(void);
+
+		// Step 1
+		void						generatePairs(void);
+		void						sortPairs(void);
+
 	protected:
 		/* Attributs */
 
@@ -69,6 +78,21 @@ class    PmergeMe
 		~PmergeMe(void);
 
 		/* Member functions */
+
+		// ::Getters
+		const Container<T, Alloc>	&getUnsortedData(void) const;
+		const Container<T, Alloc>	&getSortedData(void) const;
+		double						getElapsedTime(void) const;
+
+		// ::Setters
+		void						setUnsortedData(const std::string &str);
+		void						setUnsortedData(const int &argc, char **argv);
+
+		// :Other
+
+		const std::string			printUnsortedData(void) const;
+		const std::string			printSortedData(void) const;
+		void						fordJohnsonSort(void);
 };
 
 #include "PmergeMe.tpp"
