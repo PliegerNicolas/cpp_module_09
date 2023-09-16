@@ -1,3 +1,5 @@
+#pragma once
+
 /** Public **/
 
 /* Constructors & Destructors */
@@ -156,8 +158,8 @@ void	PmergeMe<T, Container, Alloc>::setUnsortedData(const int &argc, char **argv
 template <typename T, template <typename, typename> class Container, typename Alloc>
 const std::string	PmergeMe<T, Container, Alloc>::printUnsortedData(void) const
 {
-	std::stringstream								ss;
-	typename Container<T, Alloc>::const_iterator	it;
+	std::stringstream	ss;
+	ConstIterator		it;
 
 	ss << "{";
 	for (it = _unsortedData.begin(); it != _unsortedData.end(); it++)
@@ -173,8 +175,8 @@ const std::string	PmergeMe<T, Container, Alloc>::printUnsortedData(void) const
 template <typename T, template <typename, typename> class Container, typename Alloc>
 const std::string	PmergeMe<T, Container, Alloc>::printSortedData(void) const
 {
-	std::stringstream								ss;
-	typename Container<T, Alloc>::const_iterator	it;
+	std::stringstream	ss;
+	ConstIterator		it;
 
 	ss << "{";
 	for (it = _sortedData.begin(); it != _sortedData.end(); it++)
@@ -187,23 +189,23 @@ const std::string	PmergeMe<T, Container, Alloc>::printSortedData(void) const
 	return (ss.str());
 }
 
-#include <unistd.h>
-
 template <typename T, template <typename, typename> class Container, typename Alloc>
 void	PmergeMe<T, Container, Alloc>::fordJohnsonSort(void)
 {
+
 	startTimer();
 
+	// Step 1
 	generatePairs();
+	// Step 2
 	sortPairs();
+	// Step 3
+	mergeSort(_pairedData.begin(), _pairedData.end());
+	// Step 4
+	splitPairs();
+	// Step 5
 
 	stopTimer();
-
-	_pairedData.clear();
-	_pendingData.clear();
-	_jacobsthalSequence.clear();
-	_straggler.has = false;
-	_straggler.value = 0;
 }
 
 /** Protected **/
@@ -231,8 +233,8 @@ void	PmergeMe<T, Container, Alloc>::stopTimer(void)
 template <typename T, template <typename, typename> class Container, typename Alloc>
 void	PmergeMe<T, Container, Alloc>::generatePairs(void)
 {
-	typename Container<T, Alloc>::const_iterator	it = _unsortedData.begin();
-	typename Container<T, Alloc>::const_iterator	it_end = _unsortedData.end();
+	ConstIterator	it = _unsortedData.begin();
+	ConstIterator	it_end = _unsortedData.end();
 
 	if (_unsortedData.size() % 2 != 0)
 	{
@@ -249,16 +251,120 @@ void	PmergeMe<T, Container, Alloc>::generatePairs(void)
 	}
 }
 
+// Step 2
 template <typename T, template <typename, typename> class Container, typename Alloc>
 void	PmergeMe<T, Container, Alloc>::sortPairs(void)
 {
-	typename Container<std::pair<T, T>, Alloc>::iterator	it = _pairedData.begin();
-	typename Container<std::pair<T, T>, Alloc>::iterator	it_end = _pairedData.end();
+	PairIterator	it = _pairedData.begin();
 
-	while (it != it_end)
+	while (it != _pairedData.end())
 	{
-		if (it->first > it->second)
+		if (it->first < it->second)
 			std::swap(it->first, it->second);
 		it++;
 	}
+}
+
+// Step 3
+
+template <typename T, template <typename, typename> class Container, typename Alloc>
+void	PmergeMe<T, Container, Alloc>::mergeSort(PairIterator begin, PairIterator end)
+{
+	if (std::distance(begin, end) <= 1)
+		return ;
+	
+	PairIterator	middle = begin;
+	std::advance(middle, std::distance(begin, end) / 2);
+
+	mergeSort(begin, middle);
+	mergeSort(middle, end);
+
+	merge(begin, middle, end);
+}
+
+template <typename T, template <typename, typename> class Container, typename Alloc>
+void	PmergeMe<T, Container, Alloc>::merge(PairIterator begin, PairIterator middle,
+	PairIterator end)
+{
+	Container<std::pair<T, T>, Alloc>	left(begin, middle);
+	Container<std::pair<T, T>, Alloc>	right(middle, end);
+
+	PairIterator	leftIt = left.begin();
+	PairIterator	rightIt = right.begin();
+	PairIterator	currentIt = begin;
+
+	while (leftIt != left.end() && rightIt != right.end())
+	{
+		if (*leftIt <= *rightIt)
+			*currentIt++ = *leftIt++;
+		else
+			*currentIt++ = *rightIt++;
+	}
+
+	while (leftIt != left.end())
+		*currentIt++ = *leftIt++;
+
+	while (rightIt != right.end())
+		*currentIt++ = *rightIt++;
+}
+
+// Step 4
+
+template <typename T, template <typename, typename> class Container, typename Alloc>
+void	PmergeMe<T, Container, Alloc>::splitPairs(void)
+{
+
+	_sortedData.clear();
+	_pendingData.clear();
+
+	if (_pairedData.empty())
+		return ;
+	
+	PairIterator	it =_pairedData.begin();
+
+	while (it != _pairedData.end())
+	{
+		if (it == _pairedData.begin())
+			_sortedData.push_back(it->second);
+		else
+			_pendingData.push_back(it->second);
+		_sortedData.push_back(it->first);
+		it++;
+	}
+
+	if (_straggler.has)
+	{
+		_pendingData.push_back(_straggler.value);
+		_straggler.has = false;
+		_straggler.value = 0;
+	}
+	
+	_pairedData.clear();
+}
+
+// Step 5
+
+template <typename T, template <typename, typename> class Container, typename Alloc>
+typename PmergeMe<T, Container, Alloc>::Iterator	PmergeMe<T, Container, Alloc>::higherboundBinarySearch(
+	Container<T, Alloc> &container,
+	const T &target)
+{
+	Iterator	left = container.begin();
+	Iterator	right = container.end();
+
+	while (std::distance(left, right) > 0)
+	{
+		Iterator	middle;
+		
+		middle = left;
+		std::advance(middle, (std::distance(left, right) / 2));
+		if (*middle < target)
+		{
+			left = middle;
+			std::advance(left, 1);
+		}
+		else
+			right = middle;
+	}
+	return (left);
 }

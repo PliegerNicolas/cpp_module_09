@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 01:34:04 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/16 12:37:29 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/16 17:28:05 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -36,6 +36,11 @@ class    PmergeMe
 			T		value;
 		};
 
+		typedef typename Container<T, Alloc>::iterator						Iterator;
+		typedef typename Container<T, Alloc>::const_iterator				ConstIterator;
+		typedef typename Container<std::pair<T, T>, Alloc>::iterator		PairIterator;
+		typedef typename Container<std::pair<T, T>, Alloc>::const_iterator	ConstPairIterator;
+
 		/* Attributs */
 		Container<T, Alloc>					_unsortedData;
 		Container<T, Alloc>					_sortedData;
@@ -52,12 +57,21 @@ class    PmergeMe
 
 		/* Member functions */
 
-		void						startTimer(void);
-		void						stopTimer(void);
+		void		startTimer(void);
+		void		stopTimer(void);
 
+		// Ford-Johnson algorythm
 		// Step 1
-		void						generatePairs(void);
-		void						sortPairs(void);
+		void		generatePairs(void);
+		// Step 2
+		void		sortPairs(void);
+		// Step 3
+		void		mergeSort(PairIterator begin, PairIterator end);
+		void		merge(PairIterator begin, PairIterator middle, PairIterator end);
+		// Step 4
+		void		splitPairs(void);
+		// Step 5
+		Iterator	higherboundBinarySearch(Container<T, Alloc> &container, const T &target);
 
 	protected:
 		/* Attributs */
