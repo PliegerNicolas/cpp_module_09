@@ -6,7 +6,7 @@
 #    By: nicolas <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/21 15:02:08 by nicolas           #+#    #+#              #
-#    Updated: 2023/09/13 11:03:28 by nicolas          ###   ########.fr        #
+#    Updated: 2023/09/16 19:21:41 by nicolas          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,9 +27,7 @@ SRCS_EXTENSION	=			.cpp
 SRCS_PATH		=			srcs
 MAIN_NAME		=			main
 
-SRCS_NAMES		=			APmergeMe	\
-							MergeVector	\
-							MergeDeque	\
+SRCS_NAMES		=
 
 #* ************************************************************************** *#
 #* *                               INCLUDES                                 * *#

@@ -6,11 +6,11 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/14 22:06:17 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/16 02:09:55 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/16 18:39:39 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
 
 #ifndef DEBUG
-# define DEBUG true
+# define DEBUG false
 #endif

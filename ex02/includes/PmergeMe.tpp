@@ -204,6 +204,7 @@ void	PmergeMe<T, Container, Alloc>::fordJohnsonSort(void)
 	// Step 4
 	splitPairs();
 	// Step 5
+	insertPendingData();
 
 	stopTimer();
 }
@@ -317,7 +318,7 @@ void	PmergeMe<T, Container, Alloc>::splitPairs(void)
 	_sortedData.clear();
 	_pendingData.clear();
 
-	if (_pairedData.empty())
+	if (_pairedData.empty() && !_straggler.has)
 		return ;
 	
 	PairIterator	it =_pairedData.begin();
@@ -343,6 +344,22 @@ void	PmergeMe<T, Container, Alloc>::splitPairs(void)
 }
 
 // Step 5
+
+template <typename T, template <typename, typename> class Container, typename Alloc>
+void	PmergeMe<T, Container, Alloc>::insertPendingData(void)
+{
+	ConstIterator	pendingIt;
+	Iterator		insertionPos;
+
+	for (pendingIt = _pendingData.begin(); pendingIt != _pendingData.end(); pendingIt++)
+	{
+		insertionPos = higherboundBinarySearch(_sortedData, *pendingIt);
+
+		_sortedData.insert(insertionPos, *pendingIt);
+	}
+
+	_pendingData.clear();
+}
 
 template <typename T, template <typename, typename> class Container, typename Alloc>
 typename PmergeMe<T, Container, Alloc>::Iterator	PmergeMe<T, Container, Alloc>::higherboundBinarySearch(

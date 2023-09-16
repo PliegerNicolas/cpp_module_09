@@ -6,10 +6,11 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 11:15:58 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/16 12:20:40 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/16 19:27:09 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "PmergeMe.hpp"
+#include <iomanip>
 
 static bool	verifyArguments(int argc, char **argv)
 {
@@ -24,22 +25,38 @@ static bool	verifyArguments(int argc, char **argv)
 	return (0);
 }
 
-template <typename T, template <typename, typename> class Container>
-void	test(int argc, char **argv)
+template <typename Container>
+static void	displayData(Container &container)
 {
-	PmergeMe<T, Container>	container;
+	std::cout << CYAN;
+	std::cout << "Before:  " << WHITE << container.printUnsortedData();
+	std::cout << std::endl;
+	std::cout << CYAN;
+	std::cout << "After:   " << WHITE << container.printSortedData();
+	std::cout << std::endl;
+}
 
+template <typename Container>
+static void	displayTime(Container &container, const std::string &containerType)
+{
+	std::cout << CYAN << "Time to process a range of ";
+	std::cout << WHITE << std::setw(5) << container.getUnsortedData().size();
+	std::cout << CYAN << " elements with ";
+	std::cout << WHITE << containerType << CYAN << " : " << WHITE;
+	std::cout << std::setprecision(8) << container.getElapsedTime() << " ms";
+	std::cout << CYAN << "." << WHITE << std::endl;
+}
+
+template <typename Container>
+static void	initializePmergeMe(Container &container, const int &argc, char **argv)
+{
 	try
 	{
 		if (argc > 1)
 			container.setUnsortedData(argc, argv);
 		else
-			container.setUnsortedData(*(argv + 1));
-
+			container.setUnsortedData(argv[1]);
 		container.fordJohnsonSort();
-		std::cout << container.printUnsortedData() << std::endl;
-		std::cout << container.printSortedData() << std::endl;
-		std::cout << container.getElapsedTime() << "ms" << std::endl;
 	}
 	catch (const std::exception &e)
 	{
@@ -51,65 +68,19 @@ int	main(int argc, char **argv)
 {
 	if (verifyArguments(argc, argv))
 		return (1);
+	
+	PmergeMe<size_t, std::vector>	vect;
+	PmergeMe<double, std::deque>	dequ;
+	PmergeMe<int, std::list>		list;
 
-	test<size_t, std::vector>(argc, argv);
-	test<double, std::deque>(argc, argv);
-	test<int, std::list>(argc, argv);
+	initializePmergeMe(vect, argc, argv);
+	initializePmergeMe(dequ, argc, argv);
+	initializePmergeMe(list, argc, argv);
+
+	displayData(vect);
+	displayTime(vect, "std::vector");
+	displayTime(dequ, "std::deque");
+	displayTime(list, "std::list");
 
 	return (0);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-template <typename T>
-static void	displayResults(MergeVector<T> vect, MergeDeque<T> deque)
-{
-	std::cout << YELLOW << "std::vector" << WHITE << std::endl;
-	std::cout << CYAN;
-	std::cout << "Before:  " << WHITE << vect.printVector(vect.getData());
-	std::cout << std::endl;
-	std::cout << CYAN;
-	std::cout << "After:   " << WHITE << vect.printVector(vect.getSorted());
-	std::cout << std::endl;
-
-	std::cout << YELLOW << "std::deque" << WHITE << std::endl;
-	std::cout << CYAN;
-	std::cout << "Before:  " << WHITE << deque.printDeque(deque.getData());
-	std::cout << std::endl;
-	std::cout << CYAN;
-	std::cout << "After:   " << WHITE << deque.printDeque(deque.getSorted());
-	std::cout << std::endl;
-
-	std::cout << std::endl;
-
-	std::cout << CYAN << "Time to process a range of ";
-	std::cout << WHITE << std::setw(5) << vect.getDataSize();
-	std::cout << CYAN << " elements with ";
-	std::cout << WHITE << "std::vector" << CYAN << " : " << WHITE;
-	std::cout << std::setprecision(8) << vect.getElapsedTime() << " ms";
-	std::cout << CYAN << "." << WHITE << std::endl;
-
-	std::cout << CYAN << "Time to process a range of ";
-	std::cout << WHITE << std::setw(5) << deque.getDataSize();
-	std::cout << CYAN << " elements with ";
-	std::cout << WHITE << "std::deque" << CYAN << " : " << WHITE;
-	std::cout << std::setprecision(8) << deque.getElapsedTime() << " ms";
-	std::cout << CYAN << "." << WHITE << std::endl;
-}
-*/

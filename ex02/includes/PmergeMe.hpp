@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 01:34:04 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/16 17:28:05 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/16 18:30:42 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -71,6 +71,7 @@ class    PmergeMe
 		// Step 4
 		void		splitPairs(void);
 		// Step 5
+		void		insertPendingData(void);
 		Iterator	higherboundBinarySearch(Container<T, Alloc> &container, const T &target);
 
 	protected:
