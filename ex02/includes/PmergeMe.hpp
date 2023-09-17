@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 01:34:04 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/17 20:40:16 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/17 20:56:35 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -24,8 +24,7 @@
 #include <deque>
 #include <list>
 
-template <typename T, template <typename, typename> class Container,
-	typename Alloc = std::allocator<T> >
+template <typename T, template <typename, typename> class Container>
 class    PmergeMe
 {
 	private:
@@ -36,7 +35,7 @@ class    PmergeMe
 			T		value;
 		};
 
-		//typedef std::allocator<T>												Alloc;
+		typedef std::allocator<T>												Alloc;
 		typedef std::allocator<std::pair<T, T> >								PairAlloc;
 
 		typedef typename Container<T, Alloc>::iterator							Iterator;
@@ -45,16 +44,15 @@ class    PmergeMe
 		typedef typename Container<std::pair<T, T>, PairAlloc>::const_iterator	ConstPairIterator;
 
 		/* Attributs */
-		Container<T, Alloc>							_unsortedData;
-		Container<T, Alloc>							_sortedData;
+		Container<T, Alloc>						_unsortedData;
+		Container<T, Alloc>						_sortedData;
 
-		Container<std::pair<T, T>, PairAlloc>		_pairedData;
-		Container<T, Alloc>							_pendingData;
-		Container<size_t, std::allocator<size_t> >	_jacobsthalSequence;
+		Container<std::pair<T, T>, PairAlloc>	_pairedData;
+		Container<T, Alloc>						_pendingData;
 
-		clock_t										_startTime;
-		clock_t										_endTime;
-		straggler									_straggler;
+		clock_t									_startTime;
+		clock_t									_endTime;
+		straggler								_straggler;
 
 		/* Constructors & Destructors */
 
