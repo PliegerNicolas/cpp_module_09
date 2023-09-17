@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 01:34:04 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/16 18:30:42 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/17 20:26:10 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -42,16 +42,16 @@ class    PmergeMe
 		typedef typename Container<std::pair<T, T>, Alloc>::const_iterator	ConstPairIterator;
 
 		/* Attributs */
-		Container<T, Alloc>					_unsortedData;
-		Container<T, Alloc>					_sortedData;
+		Container<T, Alloc>							_unsortedData;
+		Container<T, Alloc>							_sortedData;
 
-		Container<std::pair<T, T>, Alloc>	_pairedData;
-		Container<T, Alloc>					_pendingData;
-		Container<size_t, Alloc>			_jacobsthalSequence;
+		Container<std::pair<T, T>, Alloc>			_pairedData;
+		Container<T, Alloc>							_pendingData;
+		Container<size_t, std::allocator<size_t> >	_jacobsthalSequence;
 
-		clock_t								_startTime;
-		clock_t								_endTime;
-		straggler							_straggler;
+		clock_t										_startTime;
+		clock_t										_endTime;
+		straggler									_straggler;
 
 		/* Constructors & Destructors */
 

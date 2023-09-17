@@ -42,7 +42,7 @@ PmergeMe<T, Container, Alloc>::PmergeMe(const PmergeMe &other):
 
 // Assignment operator
 template <typename T, template <typename, typename> class Container, typename Alloc>
-PmergeMe<T, Container, Alloc>    &PmergeMe<T, Container, Alloc>::operator=(const PmergeMe &other)
+PmergeMe<T, Container, Alloc>	&PmergeMe<T, Container, Alloc>::operator=(const PmergeMe &other)
 {
 	if (DEBUG)
 	{
@@ -80,18 +80,22 @@ PmergeMe<T, Container, Alloc>::~PmergeMe(void)
 /* Member functions */
 
 // ::Getters
+
+// getUnsortedData()
 template <typename T, template <typename, typename> class Container, typename Alloc>
 const Container<T, Alloc>	&PmergeMe<T, Container, Alloc>::getUnsortedData(void) const
 {
 	return (_unsortedData);
 }
 
+// getSortedData()
 template <typename T, template <typename, typename> class Container, typename Alloc>
 const Container<T, Alloc>	&PmergeMe<T, Container, Alloc>::getSortedData(void) const
 {
 	return (_sortedData);
 }
 
+// getElapsedTime()
 template <typename T, template <typename, typename> class Container, typename Alloc>
 double	PmergeMe<T, Container, Alloc>::getElapsedTime(void) const
 {
@@ -100,6 +104,8 @@ double	PmergeMe<T, Container, Alloc>::getElapsedTime(void) const
 }
 
 // ::Setters
+
+// setUnsortedData()
 template <typename T, template <typename, typename> class Container, typename Alloc>
 void	PmergeMe<T, Container, Alloc>::setUnsortedData(const std::string &str)
 {
@@ -125,6 +131,7 @@ void	PmergeMe<T, Container, Alloc>::setUnsortedData(const std::string &str)
 	}
 }
 
+// setUnsortedData()
 template <typename T, template <typename, typename> class Container, typename Alloc>
 void	PmergeMe<T, Container, Alloc>::setUnsortedData(const int &argc, char **argv)
 {
@@ -155,6 +162,8 @@ void	PmergeMe<T, Container, Alloc>::setUnsortedData(const int &argc, char **argv
 }
 
 // :Other
+
+// printUnsortedData()
 template <typename T, template <typename, typename> class Container, typename Alloc>
 const std::string	PmergeMe<T, Container, Alloc>::printUnsortedData(void) const
 {
@@ -172,6 +181,7 @@ const std::string	PmergeMe<T, Container, Alloc>::printUnsortedData(void) const
 	return (ss.str());
 }
 
+// printSortedData()
 template <typename T, template <typename, typename> class Container, typename Alloc>
 const std::string	PmergeMe<T, Container, Alloc>::printSortedData(void) const
 {
@@ -189,6 +199,7 @@ const std::string	PmergeMe<T, Container, Alloc>::printSortedData(void) const
 	return (ss.str());
 }
 
+// fordJohnsonSort()
 template <typename T, template <typename, typename> class Container, typename Alloc>
 void	PmergeMe<T, Container, Alloc>::fordJohnsonSort(void)
 {
@@ -218,12 +229,15 @@ void	PmergeMe<T, Container, Alloc>::fordJohnsonSort(void)
 
 /* Constructors & Destructors */
 /* Member functions */
+
+// startTimer()
 template <typename T, template <typename, typename> class Container, typename Alloc>
 void	PmergeMe<T, Container, Alloc>::startTimer(void)
 {
 	_startTime = clock();
 }
 
+// stopTimer()
 template <typename T, template <typename, typename> class Container, typename Alloc>
 void	PmergeMe<T, Container, Alloc>::stopTimer(void)
 {
@@ -231,6 +245,8 @@ void	PmergeMe<T, Container, Alloc>::stopTimer(void)
 }
 
 // Step 1
+
+// generatePairs()
 template <typename T, template <typename, typename> class Container, typename Alloc>
 void	PmergeMe<T, Container, Alloc>::generatePairs(void)
 {
@@ -253,6 +269,8 @@ void	PmergeMe<T, Container, Alloc>::generatePairs(void)
 }
 
 // Step 2
+
+// sortPairs()
 template <typename T, template <typename, typename> class Container, typename Alloc>
 void	PmergeMe<T, Container, Alloc>::sortPairs(void)
 {
@@ -268,6 +286,7 @@ void	PmergeMe<T, Container, Alloc>::sortPairs(void)
 
 // Step 3
 
+// mergeSort()
 template <typename T, template <typename, typename> class Container, typename Alloc>
 void	PmergeMe<T, Container, Alloc>::mergeSort(PairIterator begin, PairIterator end)
 {
@@ -283,6 +302,7 @@ void	PmergeMe<T, Container, Alloc>::mergeSort(PairIterator begin, PairIterator e
 	merge(begin, middle, end);
 }
 
+// merge()
 template <typename T, template <typename, typename> class Container, typename Alloc>
 void	PmergeMe<T, Container, Alloc>::merge(PairIterator begin, PairIterator middle,
 	PairIterator end)
@@ -311,6 +331,7 @@ void	PmergeMe<T, Container, Alloc>::merge(PairIterator begin, PairIterator middl
 
 // Step 4
 
+// splitPairs()
 template <typename T, template <typename, typename> class Container, typename Alloc>
 void	PmergeMe<T, Container, Alloc>::splitPairs(void)
 {
@@ -345,6 +366,7 @@ void	PmergeMe<T, Container, Alloc>::splitPairs(void)
 
 // Step 5
 
+// insertPendingData()
 template <typename T, template <typename, typename> class Container, typename Alloc>
 void	PmergeMe<T, Container, Alloc>::insertPendingData(void)
 {
@@ -361,6 +383,7 @@ void	PmergeMe<T, Container, Alloc>::insertPendingData(void)
 	_pendingData.clear();
 }
 
+// higherboundBinarySearch()
 template <typename T, template <typename, typename> class Container, typename Alloc>
 typename PmergeMe<T, Container, Alloc>::Iterator	PmergeMe<T, Container, Alloc>::higherboundBinarySearch(
 	Container<T, Alloc> &container,
