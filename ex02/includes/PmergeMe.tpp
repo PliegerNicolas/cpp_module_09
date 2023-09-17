@@ -307,8 +307,8 @@ template <typename T, template <typename, typename> class Container, typename Al
 void	PmergeMe<T, Container, Alloc>::merge(PairIterator begin, PairIterator middle,
 	PairIterator end)
 {
-	Container<std::pair<T, T>, Alloc>	left(begin, middle);
-	Container<std::pair<T, T>, Alloc>	right(middle, end);
+	Container<std::pair<T, T>, std::allocator<std::pair<T, T> > >	left(begin, middle);
+	Container<std::pair<T, T>, std::allocator<std::pair<T, T> > >	right(middle, end);
 
 	PairIterator	leftIt = left.begin();
 	PairIterator	rightIt = right.begin();

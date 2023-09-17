@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 01:34:04 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/17 20:26:10 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/17 20:40:16 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -36,16 +36,19 @@ class    PmergeMe
 			T		value;
 		};
 
-		typedef typename Container<T, Alloc>::iterator						Iterator;
-		typedef typename Container<T, Alloc>::const_iterator				ConstIterator;
-		typedef typename Container<std::pair<T, T>, Alloc>::iterator		PairIterator;
-		typedef typename Container<std::pair<T, T>, Alloc>::const_iterator	ConstPairIterator;
+		//typedef std::allocator<T>												Alloc;
+		typedef std::allocator<std::pair<T, T> >								PairAlloc;
+
+		typedef typename Container<T, Alloc>::iterator							Iterator;
+		typedef typename Container<T, Alloc>::const_iterator					ConstIterator;
+		typedef typename Container<std::pair<T, T>, PairAlloc>::iterator		PairIterator;
+		typedef typename Container<std::pair<T, T>, PairAlloc>::const_iterator	ConstPairIterator;
 
 		/* Attributs */
 		Container<T, Alloc>							_unsortedData;
 		Container<T, Alloc>							_sortedData;
 
-		Container<std::pair<T, T>, Alloc>			_pairedData;
+		Container<std::pair<T, T>, PairAlloc>		_pairedData;
 		Container<T, Alloc>							_pendingData;
 		Container<size_t, std::allocator<size_t> >	_jacobsthalSequence;
 
