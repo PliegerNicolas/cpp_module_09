@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 18:18:48 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/06 20:28:55 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/18 04:19:50 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "BitcoinExchange.hpp"
@@ -126,6 +126,9 @@ void	BitcoinExchange::convert(const std::string &fileName)
 	ProcessFunction	func;
 	BitcoinExchange::readFileData	rfd;
 	std::fstream	*file;
+
+	if (_stocks.empty())
+		return ;
 
 	try
 	{
