@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 01:34:04 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/17 20:56:35 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/18 03:45:36 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -87,6 +87,8 @@ class    PmergeMe
 
 		/* Constructors & Destructors */
 		PmergeMe(void);
+		PmergeMe(const std::string &str);
+		PmergeMe(const int &argc, char **argv);
 
 		PmergeMe(const PmergeMe &other);
 		PmergeMe    &operator=(const PmergeMe &other);

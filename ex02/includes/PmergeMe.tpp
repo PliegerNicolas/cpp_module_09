@@ -20,6 +20,44 @@ PmergeMe<T, Container>::PmergeMe(void):
 	_straggler.value = 0;
 }
 
+// Type constructor
+template <typename T, template <typename, typename> class Container>
+PmergeMe<T, Container>::PmergeMe(const std::string &str):
+	_startTime(0),
+	_endTime(0)
+{
+	if (DEBUG)
+	{
+		std::cout << CYAN;
+		std::cout << "PmergeMe : constructor with str parameter called";
+		std::cout << WHITE << std::endl;
+	}
+
+	_straggler.has = false;
+	_straggler.value = 0;
+
+	setUnsortedData(str);
+}
+
+// Type constructor
+template <typename T, template <typename, typename> class Container>
+PmergeMe<T, Container>::PmergeMe(const int &argc, char **argv):
+	_startTime(0),
+	_endTime(0)
+{
+	if (DEBUG)
+	{
+		std::cout << CYAN;
+		std::cout << "PmergeMe : constructor with argc and argv parameters called";
+		std::cout << WHITE << std::endl;
+	}
+
+	_straggler.has = false;
+	_straggler.value = 0;
+
+	setUnsortedData(argc, argv);
+}
+
 // Copy constructor
 template <typename T, template <typename, typename> class Container>
 PmergeMe<T, Container>::PmergeMe(const PmergeMe &other):

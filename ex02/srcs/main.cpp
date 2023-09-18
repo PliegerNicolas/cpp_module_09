@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 11:15:58 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/16 19:55:50 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/18 03:54:09 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "PmergeMe.hpp"
@@ -70,16 +70,17 @@ int	main(int argc, char **argv)
 {
 	if (verifyArguments(argc, argv))
 		return (1);
-	
-	PmergeMe<size_t, std::vector>	vect;
-	PmergeMe<double, std::deque>	dequ;
-	PmergeMe<int, std::list>		list;
 
-	execPmergeMe(vect, argc, argv, "std::vector");
+	PmergeMe<size_t, std::vector>	vect1;
+	PmergeMe<size_t, std::deque>	dequ;
+	PmergeMe<size_t, std::list>		list;
+
+	execPmergeMe(vect1, argc, argv, "std::vector");
 	std::cout << std::endl;
 	execPmergeMe(dequ, argc, argv, "std::deque");
 	std::cout << std::endl;
 	execPmergeMe(list, argc, argv, "std::list");
+
 
 	return (0);
 }
