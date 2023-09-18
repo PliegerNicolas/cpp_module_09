@@ -17,7 +17,7 @@ PmergeMe<T, Container>::PmergeMe(void):
 	}
 
 	_straggler.has = false;
-	_straggler.value = 0;
+	_straggler.value = T();
 }
 
 // Type constructor
@@ -34,7 +34,7 @@ PmergeMe<T, Container>::PmergeMe(const std::string &str):
 	}
 
 	_straggler.has = false;
-	_straggler.value = 0;
+	_straggler.value = T();
 
 	setUnsortedData(str);
 }
@@ -53,7 +53,7 @@ PmergeMe<T, Container>::PmergeMe(const int &argc, char **argv):
 	}
 
 	_straggler.has = false;
-	_straggler.value = 0;
+	_straggler.value = T();
 
 	setUnsortedData(argc, argv);
 }
@@ -393,7 +393,7 @@ void	PmergeMe<T, Container>::splitPairs(void)
 	{
 		_pendingData.push_back(_straggler.value);
 		_straggler.has = false;
-		_straggler.value = 0;
+		_straggler.value = T();
 	}
 	
 	_pairedData.clear();

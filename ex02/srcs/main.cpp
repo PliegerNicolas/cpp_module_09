@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 11:15:58 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/18 03:54:09 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/18 04:01:53 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "PmergeMe.hpp"
@@ -80,7 +80,6 @@ int	main(int argc, char **argv)
 	execPmergeMe(dequ, argc, argv, "std::deque");
 	std::cout << std::endl;
 	execPmergeMe(list, argc, argv, "std::list");
-
 
 	return (0);
 }
