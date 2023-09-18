@@ -6,29 +6,28 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/06 12:27:05 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/06 19:55:48 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/18 04:08:35 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "utils.hpp"
 
 static int	parseDate(std::istringstream &iss, const char separator)
 {
-    int date;
-    char sep;
+	int		date;
+	char	sep;
 
-    if (!(iss >> date)) {
-        throw std::runtime_error("Error: unsuccessful date parse.");
-    }
+	if (!(iss >> date))
+		throw std::runtime_error("Error: unsuccessful date parse.");
 
-    if (!(iss >> sep))
+	if (!(iss >> sep))
 	{
-        iss.clear();
-        iss.seekg(-1, std::ios::cur);
+		iss.clear();
+		iss.seekg(-1, std::ios::cur);
 	}
 	else if (sep != separator)
-        throw std::runtime_error("Error: invalid separator.");
+		throw std::runtime_error("Error: invalid separator.");
 
-    return (date);
+	return (date);
 }
 
 static bool	isBeforeBitcoinCreationDate(int &year, int &month, int &day)
@@ -41,9 +40,9 @@ static bool	isBeforeBitcoinCreationDate(int &year, int &month, int &day)
 void	isValidDate(const std::string &date, const char separator, const bool &moreChecks)
 {
 	std::istringstream	iss(date);
-	int year = parseDate(iss, separator);
-	int month = parseDate(iss, separator);
-	int day = parseDate(iss, separator);
+	int					year = parseDate(iss, separator);
+	int					month = parseDate(iss, separator);
+	int					day = parseDate(iss, separator);
 
 	if (year < 1 || month < 1 || month > 12 || day < 1 || day > 31)
 		throw std::runtime_error("Error: invalid year, month, or day.");
