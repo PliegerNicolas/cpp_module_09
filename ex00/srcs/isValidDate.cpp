@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/06 12:27:05 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/18 04:08:35 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/18 04:10:46 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "utils.hpp"
@@ -50,22 +50,22 @@ void	isValidDate(const std::string &date, const char separator, const bool &more
 	if (month == 4 || month == 6 || month == 9 || month == 11)
 	{
 		if (day > 30)
-        	throw std::runtime_error("Error: invalid day.");
+			throw std::runtime_error("Error: invalid day.");
 	}
 	else if (month == 2)
 	{
 		if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))
 		{
 			if (day > 29)
-        		throw std::runtime_error("Error: invalid day.");
+				throw std::runtime_error("Error: invalid day.");
 		}
 		else
 		{
 			if (day > 28)
-        		throw std::runtime_error("Error: invalid day.");
+				throw std::runtime_error("Error: invalid day.");
 		}
 	}
 
 	if (moreChecks && isBeforeBitcoinCreationDate(year, month, day))
-    	throw std::runtime_error("Error: given date before Bitcoin creation date.");
+		throw std::runtime_error("Error: given date before Bitcoin creation date.");
 }
