@@ -411,8 +411,7 @@ void	PmergeMe<T, Container>::insertPendingData(void)
 	for (ConstIterator it = _pendingData.begin(); it != _pendingData.end(); it++)
 	{
 		
-		if (currentGroup.empty()
-		|| currentGroup.size() + 1 <= static_cast<ContainerSizeType>(1 << elementGroups.size()))
+		if (currentGroup.empty() || currentGroup.size() + 1 <= (1u << elementGroups.size()))
 		{
 			currentGroup.push_back(*it);
 		}

@@ -47,8 +47,6 @@ class    PmergeMe
 		typedef typename Container<Container<T, Alloc>, Alloc2d>::iterator		Iterator2d;
 		typedef typename Container<Container<T, Alloc>, Alloc2d>::const_iterator	ConstIterator2d;
 
-		typedef typename Container<T, Alloc>::size_type					ContainerSizeType;
-
 		/* Attributs */
 		Container<T, Alloc>						_unsortedData;
 		Container<T, Alloc>						_sortedData;
