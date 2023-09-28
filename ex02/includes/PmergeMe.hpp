@@ -19,6 +19,7 @@
 #include <cstddef>
 #include <sstream>
 #include <ctime>
+#include <algorithm>
 
 #include <vector>
 #include <deque>
@@ -37,11 +38,16 @@ class    PmergeMe
 
 		typedef std::allocator<T>												Alloc;
 		typedef std::allocator<std::pair<T, T> >								PairAlloc;
+		typedef std::allocator<Container<T, Alloc> >								Alloc2d;
 
 		typedef typename Container<T, Alloc>::iterator							Iterator;
 		typedef typename Container<T, Alloc>::const_iterator					ConstIterator;
 		typedef typename Container<std::pair<T, T>, PairAlloc>::iterator		PairIterator;
 		typedef typename Container<std::pair<T, T>, PairAlloc>::const_iterator	ConstPairIterator;
+		typedef typename Container<Container<T, Alloc>, Alloc2d>::iterator		Iterator2d;
+		typedef typename Container<Container<T, Alloc>, Alloc2d>::const_iterator	ConstIterator2d;
+
+		typedef typename Container<T, Alloc>::size_type					ContainerSizeType;
 
 		/* Attributs */
 		Container<T, Alloc>						_unsortedData;

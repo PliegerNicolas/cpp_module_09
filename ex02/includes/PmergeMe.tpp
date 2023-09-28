@@ -405,14 +405,38 @@ void	PmergeMe<T, Container>::splitPairs(void)
 template <typename T, template <typename, typename> class Container>
 void	PmergeMe<T, Container>::insertPendingData(void)
 {
-	ConstIterator	pendingIt;
-	Iterator		insertionPos;
+	Container<Container<T, Alloc>, Alloc2d >	elementGroups;
+	Container<T, Alloc>				currentGroup;
 
-	for (pendingIt = _pendingData.begin(); pendingIt != _pendingData.end(); pendingIt++)
+	for (ConstIterator it = _pendingData.begin(); it != _pendingData.end(); it++)
 	{
-		insertionPos = higherboundBinarySearch(_sortedData, *pendingIt);
+		
+		if (currentGroup.empty()
+		|| currentGroup.size() + 1 <= static_cast<ContainerSizeType>(1 << elementGroups.size()))
+		{
+			currentGroup.push_back(*it);
+		}
+		else
+		{
+			elementGroups.push_back(currentGroup);
+			currentGroup.clear();
+			currentGroup.push_back(*it);
+		}
+	}
 
-		_sortedData.insert(insertionPos, *pendingIt);
+	if (!currentGroup.empty())
+		elementGroups.push_back(currentGroup);
+
+	for (Iterator2d groupIt = elementGroups.begin(); groupIt != elementGroups.end(); groupIt++)
+		std::reverse(groupIt->begin(), groupIt->end());
+
+	for (ConstIterator2d groupIt = elementGroups.begin(); groupIt != elementGroups.end(); groupIt++)
+	{
+		for (ConstIterator elemIt = groupIt->begin(); elemIt != groupIt->end(); elemIt++)
+		{
+			Iterator insertionPos = higherboundBinarySearch(_sortedData, *elemIt);
+			_sortedData.insert(insertionPos, *elemIt);
+		}
 	}
 
 	_pendingData.clear();
