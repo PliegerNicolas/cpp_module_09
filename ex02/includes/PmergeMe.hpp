@@ -45,7 +45,7 @@ class    PmergeMe
 		typedef typename Container<std::pair<T, T>, PairAlloc>::iterator		PairIterator;
 		typedef typename Container<std::pair<T, T>, PairAlloc>::const_iterator	ConstPairIterator;
 		typedef typename Container<Container<T, Alloc>, Alloc2d>::iterator		Iterator2d;
-		typedef typename Container<Container<T, Alloc>, Alloc2d>::const_iterator	ConstIterator2d;
+		typedef typename Container<Container<T, Alloc>, Alloc2d>::const_reverse_iterator	ConstReverseIterator2d;
 
 		/* Attributs */
 		Container<T, Alloc>						_unsortedData;

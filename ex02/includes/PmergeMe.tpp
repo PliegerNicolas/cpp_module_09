@@ -429,13 +429,17 @@ void	PmergeMe<T, Container>::insertPendingData(void)
 	for (Iterator2d groupIt = elementGroups.begin(); groupIt != elementGroups.end(); groupIt++)
 		std::reverse(groupIt->begin(), groupIt->end());
 
-	for (ConstIterator2d groupIt = elementGroups.begin(); groupIt != elementGroups.end(); groupIt++)
+	Container<T, Alloc>	orderedElements;
+
+	for (ConstReverseIterator2d groupIt = elementGroups.rbegin(); groupIt != elementGroups.rend(); groupIt++)
 	{
-		for (ConstIterator elemIt = groupIt->begin(); elemIt != groupIt->end(); elemIt++)
-		{
-			Iterator insertionPos = higherboundBinarySearch(_sortedData, *elemIt);
-			_sortedData.insert(insertionPos, *elemIt);
-		}
+		orderedElements.insert(orderedElements.end(), groupIt->begin(), groupIt->end());
+	}
+
+	for (ConstIterator elemIt = orderedElements.begin(); elemIt != orderedElements.end(); elemIt++)
+	{
+		Iterator	insertionPos = higherboundBinarySearch(_sortedData, *elemIt);
+		_sortedData.insert(insertionPos, *elemIt);
 	}
 
 	_pendingData.clear();
