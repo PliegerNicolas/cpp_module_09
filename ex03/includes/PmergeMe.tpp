@@ -286,6 +286,37 @@ void	PmergeMe<T, Container>::recursivePairsTraversal(Container<T, Alloc> &contai
 	recursivePairsTraversal(pendingElements);
 
 	// ???
+	insertSmallestNeighbour(pairedData);
+	for (PairsIterator pairIt = pairedData.pairs.begin(); pairIt != pairedData.pairs.end(); pairIt++)
+	{
+		Iterator	insertionPos = higherboundBinarySearch(_sortedData, pairIt->second);
+		_sortedData.insert(insertionPos, pairIt->second);
+	}
+
+	if (pairedData.hasStraggler)
+	{
+		Iterator	insertionPos = higherboundBinarySearch(_sortedData, pairedData.stragglerValue);
+		_sortedData.insert(insertionPos, pairedData.stragglerValue);
+	}
+}
+
+template <typename T, template <typename, typename> class Container>
+void	PmergeMe<T, Container>::insertSmallestNeighbour(PmergeMe<T, Container>::t_pairedData &pairedData)
+{
+	T				smallestPairedElement;
+	PairsIterator	smallestPairedElementIterator;
+
+	for (PairsIterator it = pairedData.pairs.begin(); it != pairedData.pairs.end(); it++)
+	{
+		if (it == pairedData.pairs.begin() || it->second < smallestPairedElement)
+		{
+			smallestPairedElement = it->second;
+			smallestPairedElementIterator = it;
+		}
+	}
+
+	_sortedData.insert(_sortedData.begin(), smallestPairedElement);
+	pairedData.pairs.erase(smallestPairedElementIterator);
 }
 
 template <typename T, template <typename, typename> class Container>

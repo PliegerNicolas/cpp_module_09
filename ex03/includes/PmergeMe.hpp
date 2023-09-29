@@ -64,6 +64,8 @@ class	PmergeMe
 		t_pairedData		createPairedData(Container<T, Alloc> &container);
 		Container<T, Alloc>	createPendingData(t_pairedData &pairedData);
 
+		void				insertSmallestNeighbour(t_pairedData &pairedData);
+
 		Iterator			higherboundBinarySearch(Container<T, Alloc> &container, const T &target);
 
 
