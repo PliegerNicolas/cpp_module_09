@@ -410,7 +410,6 @@ void	PmergeMe<T, Container>::insertPendingData(void)
 
 	for (ConstIterator it = _pendingData.begin(); it != _pendingData.end(); it++)
 	{
-		
 		if (currentGroup.empty() || currentGroup.size() + 1 <= (1u << elementGroups.size()))
 		{
 			currentGroup.push_back(*it);
@@ -431,7 +430,8 @@ void	PmergeMe<T, Container>::insertPendingData(void)
 
 	Container<T, Alloc>	orderedElements;
 
-	for (ConstReverseIterator2d groupIt = elementGroups.rbegin(); groupIt != elementGroups.rend(); groupIt++)
+	for (ConstReverseIterator2d groupIt = elementGroups.rbegin();
+		groupIt != elementGroups.rend(); groupIt++)
 	{
 		orderedElements.insert(orderedElements.end(), groupIt->begin(), groupIt->end());
 	}
@@ -455,7 +455,7 @@ typename Container<T, typename PmergeMe<T, Container>::Alloc>::iterator	PmergeMe
 	while (std::distance(left, right) > 0)
 	{
 		Iterator	middle;
-		
+
 		middle = left;
 		std::advance(middle, (std::distance(left, right) / 2));
 		if (*middle < target)
