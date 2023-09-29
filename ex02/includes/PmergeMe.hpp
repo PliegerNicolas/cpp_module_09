@@ -26,7 +26,7 @@
 #include <list>
 
 template <typename T, template <typename, typename> class Container>
-class    PmergeMe
+class	PmergeMe
 {
 	private:
 		/* struct */
@@ -36,16 +36,20 @@ class    PmergeMe
 			T		value;
 		};
 
-		typedef std::allocator<T>												Alloc;
-		typedef std::allocator<std::pair<T, T> >								PairAlloc;
-		typedef std::allocator<Container<T, Alloc> >								Alloc2d;
+		typedef std::allocator<T>								Alloc;
+		typedef std::allocator<std::pair<T, T> >				PairAlloc;
+		typedef std::allocator<Container<T, Alloc> >			Alloc2d;
 
-		typedef typename Container<T, Alloc>::iterator							Iterator;
-		typedef typename Container<T, Alloc>::const_iterator					ConstIterator;
-		typedef typename Container<std::pair<T, T>, PairAlloc>::iterator		PairIterator;
-		typedef typename Container<std::pair<T, T>, PairAlloc>::const_iterator	ConstPairIterator;
-		typedef typename Container<Container<T, Alloc>, Alloc2d>::iterator		Iterator2d;
-		typedef typename Container<Container<T, Alloc>, Alloc2d>::const_reverse_iterator	ConstReverseIterator2d;
+		typedef typename Container<T, Alloc>::iterator			Iterator;
+		typedef typename Container<T, Alloc>::const_iterator	ConstIterator;
+		typedef typename Container<std::pair<T, T>,
+			PairAlloc>::iterator								PairIterator;
+		typedef typename Container<std::pair<T, T>,
+			PairAlloc>::const_iterator							ConstPairIterator;
+		typedef typename Container<Container<T, Alloc>,
+			Alloc2d>::iterator									Iterator2d;
+		typedef typename Container<Container<T, Alloc>,
+			Alloc2d>::const_reverse_iterator					ConstReverseIterator2d;
 
 		/* Attributs */
 		Container<T, Alloc>						_unsortedData;
