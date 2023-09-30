@@ -411,16 +411,16 @@ PmergeMe<T, C>::generateJacobsthalSequence(const size_t size)
 	if (size >= 2)
 		jacobsthalSequence.push_back(1);
 
-	T	prev2 = 0;
-	T	prev1 = 1;
-	T	next;
+	size_t	a = 0;
+	size_t	b = 1;
+	size_t	next;
 
-	while (prev2 < size)
+	while (a < size)
 	{
-		next = (prev2 * 2) + prev1;
+		next = (a * 2) + b;
 		jacobsthalSequence.push_back(next);
-		prev2 = prev1;
-		prev1 = next;
+		a = b;
+		b = next;
 	}
 
 	return (jacobsthalSequence);
