@@ -259,17 +259,13 @@ void	PmergeMe<T, C>::fordJohnsonSort(void)
 	t_pairedData	pairedData = generateOrderedPairs(_unsortedData);
 
 	// Step 2
-	Container		S = recursivePairSort(pairedData);
+	Container	mainChain;
+	Container	pendingElements;
+
+	recursivePairSort(pairedData, mainChain, pendingElements);
 
 	// Step 3
-	GroupContainer	groups = generateInsertionGroups(S);
-	insertPendingElements(pairedData, groups);
-
-	for (GroupIterator groupsIt = groups.begin(); groupsIt != groups.end(); groupsIt++)
-	{
-		for (Iterator it = groupsIt->begin(); it != groupsIt->end(); it++)
-			_sortedData.push_back(*it);
-	}
+	insertPendingElements(mainChain, pendingElements);
 
 	stopTimer();
 }
@@ -330,6 +326,39 @@ PmergeMe<T, C>::generateOrderedPairs(const Container &container)
 			that mainChain[i] <= pendingElements[i].
 */
 template <typename T, template <typename, typename> class C>
+void	PmergeMe<T, C>::recursivePairSort(t_pairedData &pairedData,
+	Container &mainChain, Container &pendingElements)
+{
+	// Recursivly sort the pairs, excluding the straggler.
+	mergeSort(pairedData.pairs.begin(), pairedData.pairs.end());
+
+	// Insert at the start of the mainChain the element that was paired
+	// with he first and smallest element of the biggest values of the
+	// pairs.
+	ConstPairIterator	it = pairedData.pairs.begin();
+
+	if (it != pairedData.pairs.end())
+	{
+		mainChain.push_back(pairedData.pairs.begin()->second);
+		mainChain.push_back(it->first);
+		it++;
+	}
+
+	// mainChain is sorted, built with the highest values of the pairs.
+	// pendingElements are the unsorted elements left.
+	while (it != pairedData.pairs.end())
+	{
+		mainChain.push_back(it->first);
+		pendingElements.push_back(it->second);
+		it++;
+	}
+
+	// Insert the straggler if it exists at the end of pendingElements
+	if (pairedData.hasStraggler)
+		pendingElements.push_back(pairedData.straggler);
+}
+
+template <typename T, template <typename, typename> class C>
 void	PmergeMe<T, C>::merge(PairIterator begin, PairIterator middle, PairIterator end)
 {
 	PairContainer	left(begin, middle);
@@ -371,28 +400,6 @@ void	PmergeMe<T, C>::mergeSort(PairIterator begin, PairIterator end)
 	merge(begin, middle, end);
 }
 
-template <typename T, template <typename, typename> class C>
-typename PmergeMe<T, C>::Container
-PmergeMe<T, C>::recursivePairSort(t_pairedData &pairedData)
-{
-	// Recursivly sort the pairs, excluding the straggler.
-	mergeSort(pairedData.pairs.begin(), pairedData.pairs.end());
-
-	Container	S;
-
-	// Build the mainChain (S) from the highest values of the pairs.
-	// Those are sorted so S will be sorted as well.
-	for (ConstPairIterator it = pairedData.pairs.begin(); it != pairedData.pairs.end(); it++)
-		S.push_back(it->first);
-
-	// Insert at the start of S the element that was paired with the
-	// first and smallest element of S. The first element by extension.
-	S.insert(S.begin(), pairedData.pairs.begin()->second);
-	pairedData.pairs.erase(pairedData.pairs.begin());
-
-	return (S);
-}
-
 /*
 	Step 3:
 		- We insert the pendingElements into the MainChain in a way that
@@ -405,6 +412,118 @@ PmergeMe<T, C>::recursivePairSort(t_pairedData &pairedData)
 			to determine the sizes of groups into which the uninserted
 			elements are partitioned.
 */
+template <typename T, template <typename, typename> class C>
+void	PmergeMe<T, C>::insertPendingElements(Container &mainChain, Container &pendingElements)
+{
+	GroupContainer		groups = generateInsertionGroups(mainChain);
+
+	for (Iterator pendIt = pendingElements.begin(); pendIt != pendingElements.end(); pendIt++)
+	{
+		const T	&target = *pendIt;
+
+		for (GroupIterator groupsIt = groups.begin(); groupsIt != groups.end(); groupsIt++)
+		{
+			Container	&currentGroup = *groupsIt;
+
+			if (target <= currentGroup.front())
+			{
+				Iterator	insertionPos = higherboundBinarySearch(currentGroup, target);
+
+				currentGroup.insert(insertionPos, target);
+				break ;
+			}
+		}
+	}
+	std::cout << 10 << std::endl;
+}
+
+template <typename T, template <typename, typename> class C>
+typename PmergeMe<T, C>::GroupContainer
+PmergeMe<T, C>::generateInsertionGroups(const Container &mainChain)
+{
+	GroupContainer		groups;
+	JacobsthalContainer	jacobsthalSequence = generateJacobsthalSequence(mainChain.size());
+
+	ConstIterator	it = mainChain.begin();
+	ConstIterator	jacobIt = jacobsthalSequence.begin();
+
+	std::advance(jacobIt, 3);
+	while (it != mainChain.end() && jacobIt != jacobsthalSequence.end())
+	{
+		Container		group;
+		const size_t	groupSize = *jacobIt;
+
+		for (size_t i = 0; i < groupSize && it != mainChain.end(); i++)
+			group.push_back(*it++);
+
+		std::reverse(group.begin(), group.end());
+		groups.push_back(group);
+		jacobIt++;
+	}
+	return (groups);
+}
+
+template <typename T, template <typename, typename> class C>
+typename PmergeMe<T, C>::JacobsthalContainer
+PmergeMe<T, C>::generateJacobsthalSequence(const size_t size)
+{
+	JacobsthalContainer				jacobsthalSequence;
+
+	if (size >= 1)
+		jacobsthalSequence.push_back(0);
+	if (size >= 2)
+		jacobsthalSequence.push_back(1);
+
+	size_t	a = 0;
+	size_t	b = 1;
+	size_t	next;
+
+	while (a < size)
+	{
+		next = (a * 2) + b;
+		jacobsthalSequence.push_back(next);
+		a = b;
+		b = next;
+	}
+	return (jacobsthalSequence);
+}
+
+template <typename T, template <typename, typename> class C>
+typename PmergeMe<T, C>::Iterator
+PmergeMe<T, C>::higherboundBinarySearch(Container &container, const T &target)
+{
+	Iterator	left = container.begin();
+	Iterator	right = container.end();
+
+	while (std::distance(left, right) > 0)
+	{
+		Iterator	middle;
+
+		middle = left;
+		std::advance(middle, (std::distance(left, right) / 2));
+		if (*middle > target)
+		{
+			left = middle;
+			std::advance(left, 1);
+		}
+		else
+			right = middle;
+	}
+	return (left);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 template <typename T, template <typename, typename> class C>
 void	PmergeMe<T, C>::insertPendingElements(t_pairedData &pairedData, GroupContainer &groups)
 {
@@ -500,3 +619,4 @@ PmergeMe<T, C>::generateJacobsthalSequence(const size_t size)
 	}
 	return (jacobsthalSequence);
 }
+*/
