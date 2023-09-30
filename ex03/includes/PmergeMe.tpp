@@ -250,8 +250,137 @@ void	PmergeMe<T, C>::stopTimer(void)
 template <typename T, template <typename, typename> class C>
 void	PmergeMe<T, C>::fordJohnsonSort(void)
 {
+	if (_sortedData.size() > 0)
+		_sortedData.clear();
+
 	startTimer();
+
+	// Step 1
+	t_pairedData	pairedData = generateOrderedPairs(_unsortedData);
+
+	// Step2
+	Container	pendingElements = recursivePairSort(pairedData);
 
 	stopTimer();
 }
 
+/*
+	Step 1:
+		- Split the collection in n/2 pairs of 2 elements.
+		-  Order these pair's elements pairwise (highest value as first,
+			smallest value as second, it's an arbitrary choice).
+		- If the number of elements is odd, put the last element on the side.
+			It isn't paired with any element and it will be considered at the
+			end of the list. That element is called the straggler.
+*/
+template <typename T, template <typename, typename> class C>
+typename PmergeMe<T, C>::t_pairedData
+PmergeMe<T, C>::generateOrderedPairs(const Container &container)
+{
+	t_pairedData	pairedData;
+	ConstIterator	it = container.begin();
+	ConstIterator	end = container.end();
+
+	// Isolate straggler if odd number of values.
+	if (container.size() % 2 != 0)
+	{
+		pairedData.hasStraggler = true;
+		pairedData.straggler = container.back();
+		end--;
+	}
+	else
+	{
+		pairedData.hasStraggler = false;
+		pairedData.straggler = T();
+	}
+
+	// Fill the pairedData container, sorting the pairs internally.
+	while (it != end)
+	{
+		const T	&first = *it;
+		std::advance(it, 1);
+		const T	&second = *it;
+		std::advance(it, 1);
+
+		if (first > second)
+			pairedData.pairs.push_back(std::pair<T, T>(first, second));
+		else
+			pairedData.pairs.push_back(std::pair<T, T>(second, first));
+	}
+	return (pairedData);
+}
+
+/*
+	Step 2:
+		- Recursivly sort the pairs of elements by their highest value.
+		- The straggler is isolated and considered as if at the end of the
+			pairs collection.
+		- The highest values of the sorted pairs form the 'main chain' and
+			the smallest the 'pending elements'. In our situation we know
+			that mainChain[i] <= pendingElements[i].
+*/
+template <typename T, template <typename, typename> class C>
+void	PmergeMe<T, C>::merge(PairIterator begin, PairIterator middle, PairIterator end)
+{
+	PairContainer	left(begin, middle);
+	PairContainer	right(middle, end);
+
+	PairIterator	leftIt = left.begin();
+	PairIterator	rightIt = right.begin();
+	PairIterator	currentIt = begin;
+
+	while (leftIt != left.end() && rightIt != right.end())
+	{
+		if (*leftIt <= *rightIt)
+			*currentIt++ = *leftIt++;
+		else
+			*currentIt++ = *rightIt++;
+	}
+
+	while (leftIt != left.end())
+		*currentIt++ = *leftIt++;
+
+	while (rightIt != right.end())
+		*currentIt++ = *rightIt++;
+}
+
+template <typename T, template <typename, typename> class C>
+void	PmergeMe<T, C>::mergeSort(PairIterator begin, PairIterator end)
+{
+	if (std::distance(begin, end) <= 1)
+		return ;
+
+	PairIterator	middle;
+
+	middle = begin;
+	std::advance(middle, std::distance(begin, end) / 2);
+
+	mergeSort(begin, middle);
+	mergeSort(middle, end);
+
+	merge(begin, middle, end);
+}
+
+template <typename T, template <typename, typename> class C>
+typename PmergeMe<T, C>::Container
+PmergeMe<T, C>::recursivePairSort(t_pairedData &pairedData)
+{
+	// Recursivly sort the pairs, excluding the straggler.
+	mergeSort(pairedData.pairs.begin(), pairedData.pairs.end());
+
+	Container	pendingElements;
+
+	// Build the mainChain (_sortedData) and pendingElementsChain from the highest
+	// values of the pairs. Those are sorted so _sortedData will be sorted as well.
+	for (ConstPairIterator it = pairedData.pairs.begin(); it != pairedData.pairs.end(); it++)
+	{
+		_sortedData.push_back(it->first);
+		pendingElements.push_back(it->second);
+	}
+
+	// Insert straggler at the end of pendingElements.
+	if (pairedData.hasStraggler)
+		pendingElements.push_back(pairedData.straggler);
+
+	return (pendingElements);
+}

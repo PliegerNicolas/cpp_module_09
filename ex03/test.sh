@@ -22,5 +22,5 @@ random_numbers="${random_numbers# }"
 #echo "Arguments : "
 #echo "${random_numbers[@]}"
 
-#gdb --args ./PmergeMe "${random_numbers[@]}"
-./PmergeMe "${random_numbers[@]}"
+gdb --args ./PmergeMe "${random_numbers[@]}"
+#./PmergeMe "${random_numbers[@]}"

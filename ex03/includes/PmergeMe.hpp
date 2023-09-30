@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 01:34:04 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/30 13:23:15 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/30 14:15:04 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -61,10 +61,15 @@ class	PmergeMe
 
 		/* Member functions */
 
-		void		startTimer(void);
-		void		stopTimer(void);
+		void			startTimer(void);
+		void			stopTimer(void);
 
 		// Ford-Johnson algorythm
+		t_pairedData	generateOrderedPairs(const Container &container);
+
+		Container		recursivePairSort(t_pairedData &pairedData);
+		void			mergeSort(PairIterator begin, PairIterator end);
+		void			merge(PairIterator begin, PairIterator middle, PairIterator end);
 
 	protected:
 		/* Attributs */
