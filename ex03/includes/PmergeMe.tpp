@@ -401,6 +401,14 @@ PmergeMe<T, C>::recursivePairSort(t_pairedData &pairedData)
 			elements are partitioned.
 */
 template <typename T, template <typename, typename> class C>
+void	PmergeMe<T, C>::insertPendingElements(Container &pendingElements)
+{
+	GroupContainer	groups = generateInsertionGroups(pendingElements);
+
+	std::cout << 10 << std::endl;
+}
+
+template <typename T, template <typename, typename> class C>
 typename PmergeMe<T, C>::JacobsthalContainer
 PmergeMe<T, C>::generateJacobsthalSequence(const size_t size)
 {
@@ -427,12 +435,31 @@ PmergeMe<T, C>::generateJacobsthalSequence(const size_t size)
 }
 
 template <typename T, template <typename, typename> class C>
-void	PmergeMe<T, C>::insertPendingElements(Container &pendingElements)
+typename PmergeMe<T, C>::GroupContainer
+PmergeMe<T, C>::generateInsertionGroups(const Container &pendingElements)
 {
-	JacobsthalContainer	jacobsthalSequence = generateJacobsthalSequence(pendingElements.size());
-	ConstJacobIterator	jacobIt = jacobsthalSequence.begin();
+	JacobsthalContainer	jacobsthalSequence;
+	GroupContainer		groups;
+
+	ConstIterator		pendingElementsIt;
+	ConstIterator		jacobIt;
+
+	jacobsthalSequence = generateJacobsthalSequence(pendingElements.size());
+	pendingElementsIt = pendingElements.begin();
+	jacobIt = jacobsthalSequence.begin();
 	std::advance(jacobIt, 2);
 
-	(void)jacobsthalSequence;
-	(void)pendingElements;
+	while (pendingElementsIt != pendingElements.end() && jacobIt != jacobsthalSequence.end())
+	{
+		Container	group;
+		size_t		groupSize = *jacobIt;
+
+		for (size_t i = 0; i < groupSize && pendingElementsIt != pendingElements.end(); i++)
+			group.push_back(*pendingElementsIt++);
+
+		std::reverse(group.begin(), group.end());
+		groups.push_back(group);
+		jacobIt++;
+	}
+	return (groups);
 }

@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 01:34:04 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/30 17:33:27 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/30 18:19:38 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -33,10 +33,12 @@ class	PmergeMe
 		typedef std::allocator<T>								Alloc;
 		typedef std::allocator<std::pair<T, T> >				PairAlloc;
 		typedef std::allocator<size_t>							JacobsthalAlloc;
+		typedef std::allocator<C<T, Alloc> >					GroupAlloc;
 
 		typedef C<T, Alloc>										Container;
 		typedef C<std::pair<T, T>, PairAlloc>					PairContainer;
 		typedef C<size_t, JacobsthalAlloc>						JacobsthalContainer;
+		typedef C<C<T, Alloc>, GroupAlloc >						GroupContainer;
 
 		typedef typename Container::iterator					Iterator;
 		typedef typename Container::const_iterator				ConstIterator;
@@ -44,6 +46,9 @@ class	PmergeMe
 		typedef typename PairContainer::const_iterator			ConstPairIterator;
 		typedef typename JacobsthalContainer::iterator			JacobIterator;
 		typedef typename JacobsthalContainer::const_iterator	ConstJacobIterator;
+		typedef typename GroupContainer::iterator				GroupIterator;
+		typedef typename GroupContainer::const_iterator			ConstGroupIterator;
+
 
 		typedef struct pairedData
 		{
@@ -74,6 +79,7 @@ class	PmergeMe
 		void				merge(PairIterator begin, PairIterator middle, PairIterator end);
 
 		void				insertPendingElements(Container &pendingElements);
+		GroupContainer		generateInsertionGroups(const Container &pendingElements);
 		JacobsthalContainer	generateJacobsthalSequence(const size_t size);
 
 	protected:
