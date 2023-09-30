@@ -395,6 +395,10 @@ PmergeMe<T, C>::recursivePairSort(t_pairedData &pairedData)
 			often as possible.
 		- We know that pendingElements[1] is <= to mainChain[1]. We can
 			insert it directly.
+		- Jacobsthal's sequence provides a sequence of numbers where each
+			number is one less than a power of two. These numbers are used
+			to determine the sizes of groups into which the uninserted
+			elements are partitioned.
 */
 template <typename T, template <typename, typename> class C>
 typename PmergeMe<T, C>::JacobsthalContainer
