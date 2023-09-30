@@ -258,8 +258,11 @@ void	PmergeMe<T, C>::fordJohnsonSort(void)
 	// Step 1
 	t_pairedData	pairedData = generateOrderedPairs(_unsortedData);
 
-	// Step2
+	// Step 2
 	Container	pendingElements = recursivePairSort(pairedData);
+
+	// Step 3
+	insertPendingElements(pendingElements);
 
 	stopTimer();
 }
@@ -378,9 +381,54 @@ PmergeMe<T, C>::recursivePairSort(t_pairedData &pairedData)
 		pendingElements.push_back(it->second);
 	}
 
-	// Insert straggler at the end of pendingElements.
+	// Add straggler to the end of pendingElements if it exists.
 	if (pairedData.hasStraggler)
 		pendingElements.push_back(pairedData.straggler);
 
 	return (pendingElements);
+}
+
+/*
+	Step 3:
+		- We insert the pendingElements into the MainChain in a way that
+			ensures that the size of the insertion area is a (2^x - 1) as
+			often as possible.
+		- We know that pendingElements[1] is <= to mainChain[1]. We can
+			insert it directly.
+*/
+template <typename T, template <typename, typename> class C>
+typename PmergeMe<T, C>::JacobsthalContainer
+PmergeMe<T, C>::generateJacobsthalSequence(const size_t size)
+{
+	JacobsthalContainer				jacobsthalSequence;
+
+	if (size >= 1)
+		jacobsthalSequence.push_back(0);
+	if (size >= 2)
+		jacobsthalSequence.push_back(1);
+
+	T	prev2 = 0;
+	T	prev1 = 1;
+	T	next;
+
+	while (prev2 < size)
+	{
+		next = (prev2 * 2) + prev1;
+		jacobsthalSequence.push_back(next);
+		prev2 = prev1;
+		prev1 = next;
+	}
+
+	return (jacobsthalSequence);
+}
+
+template <typename T, template <typename, typename> class C>
+void	PmergeMe<T, C>::insertPendingElements(Container &pendingElements)
+{
+	JacobsthalContainer	jacobsthalSequence = generateJacobsthalSequence(pendingElements.size());
+	ConstJacobIterator	jacobIt = jacobsthalSequence.begin();
+	std::advance(jacobIt, 2);
+
+	(void)jacobsthalSequence;
+	(void)pendingElements;
 }

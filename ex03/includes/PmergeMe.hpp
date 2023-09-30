@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 01:34:04 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/30 14:15:04 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/09/30 17:33:27 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -30,18 +30,20 @@ class	PmergeMe
 {
 	private:
 		/* Typdefs */
-		typedef std::allocator<T>					Alloc;
-		typedef std::allocator<std::pair<T, T> >	PairAlloc;
-		typedef std::allocator<size_t>				JacobsthalAlloc;
+		typedef std::allocator<T>								Alloc;
+		typedef std::allocator<std::pair<T, T> >				PairAlloc;
+		typedef std::allocator<size_t>							JacobsthalAlloc;
 
-		typedef C<T, Alloc>							Container;
-		typedef C<std::pair<T, T>, PairAlloc>		PairContainer;
-		typedef C<size_t, JacobsthalAlloc>			JacobsthalSequence;
+		typedef C<T, Alloc>										Container;
+		typedef C<std::pair<T, T>, PairAlloc>					PairContainer;
+		typedef C<size_t, JacobsthalAlloc>						JacobsthalContainer;
 
-		typedef typename Container::iterator			Iterator;
-		typedef typename Container::const_iterator		ConstIterator;
-		typedef typename PairContainer::iterator		PairIterator;
-		typedef typename PairContainer::const_iterator	ConstPairIterator;
+		typedef typename Container::iterator					Iterator;
+		typedef typename Container::const_iterator				ConstIterator;
+		typedef typename PairContainer::iterator				PairIterator;
+		typedef typename PairContainer::const_iterator			ConstPairIterator;
+		typedef typename JacobsthalContainer::iterator			JacobIterator;
+		typedef typename JacobsthalContainer::const_iterator	ConstJacobIterator;
 
 		typedef struct pairedData
 		{
@@ -61,15 +63,18 @@ class	PmergeMe
 
 		/* Member functions */
 
-		void			startTimer(void);
-		void			stopTimer(void);
+		void				startTimer(void);
+		void				stopTimer(void);
 
 		// Ford-Johnson algorythm
-		t_pairedData	generateOrderedPairs(const Container &container);
+		t_pairedData		generateOrderedPairs(const Container &container);
 
-		Container		recursivePairSort(t_pairedData &pairedData);
-		void			mergeSort(PairIterator begin, PairIterator end);
-		void			merge(PairIterator begin, PairIterator middle, PairIterator end);
+		Container			recursivePairSort(t_pairedData &pairedData);
+		void				mergeSort(PairIterator begin, PairIterator end);
+		void				merge(PairIterator begin, PairIterator middle, PairIterator end);
+
+		void				insertPendingElements(Container &pendingElements);
+		JacobsthalContainer	generateJacobsthalSequence(const size_t size);
 
 	protected:
 		/* Attributs */
