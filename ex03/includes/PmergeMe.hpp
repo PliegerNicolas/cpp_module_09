@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 01:34:04 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/30 18:19:38 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/10/01 00:29:56 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -78,8 +78,9 @@ class	PmergeMe
 		void				mergeSort(PairIterator begin, PairIterator end);
 		void				merge(PairIterator begin, PairIterator middle, PairIterator end);
 
-		void				insertPendingElements(Container &pendingElements);
-		GroupContainer		generateInsertionGroups(const Container &pendingElements);
+		void				insertPendingElements(t_pairedData &pairedData, GroupContainer &groups);
+		GroupContainer		generateInsertionGroups(const Container &S);
+		Iterator			higherboundBinarySearch(Container &container, const T &target);
 		JacobsthalContainer	generateJacobsthalSequence(const size_t size);
 
 	protected:
