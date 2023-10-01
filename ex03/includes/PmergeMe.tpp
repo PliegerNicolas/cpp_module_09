@@ -395,11 +395,15 @@ PmergeMe<T, C>::insertPendingElements(const t_pairedData &pairedData)
 	splitPairs(pairedData.pairs, mainChain, pendingChain);
 
 	ConstGroupIterator	groupIt = pendingChain.begin();
-	size_t				groupOffset = 0;
+	//size_t				groupOffset = 0;
 
 	// First insert doesn't need any comparator. We know b1 <= a1.
 	mainChain.insert(mainChain.begin(), *groupIt->begin());
 	groupIt++;
+
+	//groupOffset = 1;
+
+	// // // HOW SHOULD I DEFINE WHERE Yi IS POSITIONNED ?!
 
 	while (groupIt != pendingChain.end())
 	{
