@@ -403,6 +403,7 @@ PmergeMe<T, C>::splitPairs(const t_pairedData &pairedData,
 {
 	JacobsthalContainer	jacobsthalSequence = generateJacobsthalSequence(pairedData.pairs.size());
 	ConstPairIterator	pairIt = pairedData.pairs.begin();
+	ConstPairIterator	nextPairIt = pairedData.pairs.begin();
 	ConstJacobIterator	jacobIt = jacobsthalSequence.begin();
 
 	std::advance(jacobIt, 2);
@@ -410,7 +411,7 @@ PmergeMe<T, C>::splitPairs(const t_pairedData &pairedData,
 	while (jacobIt != jacobsthalSequence.end() && pairIt != pairedData.pairs.end())
 	{
 		Container			group;
-		ConstPairIterator	nextPairIt = pairedData.pairs.begin();
+		nextPairIt = pairedData.pairs.begin();
 		std::advance(nextPairIt, *jacobIt);
 
 		while (pairIt != pairedData.pairs.end() && pairIt != nextPairIt)
@@ -425,6 +426,11 @@ PmergeMe<T, C>::splitPairs(const t_pairedData &pairedData,
 		pendingChain.push_back(group);
 
 		jacobIt++;
+	}
+
+	if (pairedData.hasStraggler)
+	{
+		if (
 	}
 }
 
