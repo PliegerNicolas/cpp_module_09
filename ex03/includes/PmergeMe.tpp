@@ -388,27 +388,10 @@ template <typename T, template <typename, typename> class C>
 typename PmergeMe<T, C>::Container
 PmergeMe<T, C>::insertPendingElements(const t_pairedData &pairedData)
 {
-	Container			mainChain;
-	Container			pendingElements;
-	size_t				i = 1;
+	Container		mainChain;
+	GroupContainer	pendingChain;
 
-	// Populate mainChain et pendingElements
-	splitPairs(pairedData, mainChain, pendingElements);
-
-	// Generate jacobsthal sequence based on mainChain size.
-	JacobsthalContainer	jacobsthalSequence = generateJacobsthalSequence(mainChain.size());
-	ConstJacobIterator	jacobIt = jacobsthalSequence.begin();
-	std::advance(jacobIt, 3);
-
-	for (Iterator it = pendingElements.begin(); it != pendingElements.end(); it++)
-	{
-		if (i >= *jacobIt)
-		{
-			jacobIt++;
-			i = 1;
-		}
-		i++;
-	}
+	splitPairs(pairedData, mainChain, pendingChain);
 
 	return (mainChain);
 }
@@ -416,33 +399,38 @@ PmergeMe<T, C>::insertPendingElements(const t_pairedData &pairedData)
 template <typename T, template <typename, typename> class C>
 void
 PmergeMe<T, C>::splitPairs(const t_pairedData &pairedData,
-	Container &mainChain, Container &pendingElements)
+	Container &mainChain, GroupContainer &pendingChain)
 {
+	JacobsthalContainer	jacobsthalSequence = generateJacobsthalSequence(pairedData.pairs.size());
 	ConstPairIterator	pairIt = pairedData.pairs.begin();
+	ConstJacobIterator	jacobIt = jacobsthalSequence.begin();
 
-	// No comparaison is needed to insert the first element. We know b >= a.
-	if (pairIt != pairedData.pairs.end())
+	std::advance(jacobIt, 2);
+
+	while (jacobIt != jacobsthalSequence.end() && pairIt != pairedData.pairs.end())
 	{
-		mainChain.push_back(pairIt->second);
-		pendingElements.push_back(pairIt->second);
-		mainChain.push_back(pairIt->first);
-		pairIt++;
-	}
+		Container			group;
+		ConstPairIterator	nextPairIt = pairedData.pairs.begin();
+		std::advance(nextPairIt, *jacobIt);
 
-	for (; pairIt != pairedData.pairs.end(); pairIt++)
-	{
-		mainChain.push_back(pairIt->first);
-		pendingElements.push_back(pairIt->second);
-	}
+		while (pairIt != pairedData.pairs.end() && pairIt != nextPairIt)
+		{
+			mainChain.push_back(pairIt->first);
+			group.push_back(pairIt->second);
 
-	// Add the straggler at the end of pending Elements.
-	if (pairedData.hasStraggler)
-		pendingElements.push_back(pairedData.straggler);
+			pairIt++;
+		}
+
+		std::reverse(group.begin(), group.end());
+		pendingChain.push_back(group);
+
+		jacobIt++;
+	}
 }
 
 template <typename T, template <typename, typename> class C>
 typename PmergeMe<T, C>::Iterator
-PmergeMe<T, C>::binarySearch(Iterator &left, Iterator &right, const T &target)
+PmergeMe<T, C>::binarySearch(Iterator left, Iterator right, const T &target)
 {
 	// Lowerbound binary search
 
@@ -451,7 +439,7 @@ PmergeMe<T, C>::binarySearch(Iterator &left, Iterator &right, const T &target)
 		Iterator	middle = left;
 		std::advance(middle, (std::distance(left, right) / 2));
 
-		if (*middle > target)
+		if (*middle < target)
 		{
 			left = middle;
 			std::advance(left, 1);

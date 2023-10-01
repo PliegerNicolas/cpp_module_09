@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 01:34:04 by nicolas           #+#    #+#             */
-/*   Updated: 2023/10/01 16:23:52 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/10/01 21:28:20 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -33,10 +33,12 @@ class	PmergeMe
 		typedef std::allocator<T>								Alloc;
 		typedef std::allocator<std::pair<T, T> >				PairAlloc;
 		typedef std::allocator<size_t>							JacobsthalAlloc;
+		typedef std::allocator<C<T, Alloc> >					GroupAlloc;
 
 		typedef C<T, Alloc>										Container;
 		typedef C<std::pair<T, T>, PairAlloc>					PairContainer;
 		typedef C<size_t, JacobsthalAlloc>						JacobsthalContainer;
+		typedef C<C<T, Alloc>, GroupAlloc>						GroupContainer;
 
 		typedef typename Container::iterator					Iterator;
 		typedef typename Container::const_iterator				ConstIterator;
@@ -44,7 +46,8 @@ class	PmergeMe
 		typedef typename PairContainer::const_iterator			ConstPairIterator;
 		typedef typename JacobsthalContainer::iterator			JacobIterator;
 		typedef typename JacobsthalContainer::const_iterator	ConstJacobIterator;
-
+		typedef typename GroupContainer::iterator				GroupIterator;
+		typedef typename GroupContainer::const_iterator			ConstGroupIterator;
 
 		typedef struct pairedData
 		{
@@ -82,8 +85,9 @@ class	PmergeMe
 		// Step4:
 		Container			insertPendingElements(const t_pairedData &pairedData);
 		void				splitPairs(const t_pairedData &pairedData,
-								Container &mainChain, Container &pendingElements);
-		Iterator			binarySearch(Iterator &left, Iterator &right, const T &target);
+								Container &mainChain, GroupContainer &pendingChain);
+
+		Iterator			binarySearch(Iterator left, Iterator right, const T &target);
 		JacobsthalContainer	generateJacobsthalSequence(const size_t size);
 
 	protected:
