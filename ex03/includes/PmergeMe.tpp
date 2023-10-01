@@ -400,11 +400,10 @@ PmergeMe<T, C>::insertPendingElements(const t_pairedData &pairedData)
 	// First insert doesn't need any comparator. We know b1 <= a1.
 	mainChain.insert(mainChain.begin(), *groupIt->begin());
 	groupIt++;
-	groupOffset++;
 
 	while (groupIt != pendingChain.end())
 	{
-		groupOffset += groupIt->size();
+		//groupOffset += groupIt->size();
 
 		for (ConstIterator it = groupIt->begin(); it != groupIt->end(); it++)
 		{
@@ -412,7 +411,7 @@ PmergeMe<T, C>::insertPendingElements(const t_pairedData &pairedData)
 
 			Iterator	searchStart = mainChain.begin();
 			Iterator	searchEnd = mainChain.begin();
-			std::advance(searchEnd, groupOffset);
+			//std::advance(searchEnd, groupOffset);
 
 			Iterator	insertionPos = binarySearch(searchStart, searchEnd, target);
 			mainChain.insert(insertionPos, target);
