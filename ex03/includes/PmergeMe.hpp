@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 01:34:04 by nicolas           #+#    #+#             */
-/*   Updated: 2023/10/01 21:28:20 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/10/01 22:10:51 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -84,7 +84,7 @@ class	PmergeMe
 
 		// Step4:
 		Container			insertPendingElements(const t_pairedData &pairedData);
-		void				splitPairs(const t_pairedData &pairedData,
+		void				splitPairs(const PairContainer &pairedData,
 								Container &mainChain, GroupContainer &pendingChain);
 
 		Iterator			binarySearch(Iterator left, Iterator right, const T &target);

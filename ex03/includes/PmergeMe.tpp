@@ -391,30 +391,31 @@ PmergeMe<T, C>::insertPendingElements(const t_pairedData &pairedData)
 	Container		mainChain;
 	GroupContainer	pendingChain;
 
-	splitPairs(pairedData, mainChain, pendingChain);
+	splitPairs(pairedData.pairs, mainChain, pendingChain);
 
 	return (mainChain);
 }
 
 template <typename T, template <typename, typename> class C>
 void
-PmergeMe<T, C>::splitPairs(const t_pairedData &pairedData,
+PmergeMe<T, C>::splitPairs(const PairContainer &pairs,
 	Container &mainChain, GroupContainer &pendingChain)
 {
-	JacobsthalContainer	jacobsthalSequence = generateJacobsthalSequence(pairedData.pairs.size());
-	ConstPairIterator	pairIt = pairedData.pairs.begin();
-	ConstPairIterator	nextPairIt = pairedData.pairs.begin();
+	JacobsthalContainer	jacobsthalSequence = generateJacobsthalSequence(pairs.size());
+	ConstPairIterator	pairIt = pairs.begin();
+	ConstPairIterator	nextPairIt = pairs.begin();
 	ConstJacobIterator	jacobIt = jacobsthalSequence.begin();
 
 	std::advance(jacobIt, 2);
 
-	while (jacobIt != jacobsthalSequence.end() && pairIt != pairedData.pairs.end())
+	while (jacobIt != jacobsthalSequence.end() && pairIt != pairs.end())
 	{
 		Container			group;
-		nextPairIt = pairedData.pairs.begin();
+
+		nextPairIt = pairs.begin();
 		std::advance(nextPairIt, *jacobIt);
 
-		while (pairIt != pairedData.pairs.end() && pairIt != nextPairIt)
+		while (pairIt != pairs.end() && pairIt != nextPairIt)
 		{
 			mainChain.push_back(pairIt->first);
 			group.push_back(pairIt->second);
@@ -426,11 +427,6 @@ PmergeMe<T, C>::splitPairs(const t_pairedData &pairedData,
 		pendingChain.push_back(group);
 
 		jacobIt++;
-	}
-
-	if (pairedData.hasStraggler)
-	{
-		if (
 	}
 }
 
