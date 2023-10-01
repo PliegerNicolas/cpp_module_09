@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 01:34:04 by nicolas           #+#    #+#             */
-/*   Updated: 2023/10/01 15:49:29 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/10/01 15:57:34 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -70,16 +70,17 @@ class	PmergeMe
 		// Ford-Johnson algorythm
 
 		// Step1:
-		t_pairedData	generatePairs(const Container &container);
+		t_pairedData		generatePairs(const Container &container);
 
 		// Step2:
-		void			sortPairs(PairContainer &pairs);
+		void				sortPairs(PairContainer &pairs);
 
 		// Step3:
-		void			mergeSort(PairIterator begin, PairIterator end);
-		void			merge(PairIterator begin, PairIterator middle, PairIterator end);
+		void				mergeSort(PairIterator begin, PairIterator end);
+		void				merge(PairIterator begin, PairIterator middle, PairIterator end);
 
 		// Step4:
+		Iterator			binarySearch(Container &container, const T &target);
 		JacobsthalContainer	generateJacobsthalSequence(const size_t size);
 
 	protected:
