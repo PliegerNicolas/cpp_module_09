@@ -263,7 +263,8 @@ void	PmergeMe<T, C>::fordJohnsonSort(void)
 	sortPairs(pairedData.pairs);
 
 	//Step 3:
-	mergeSort(pairedData.pairs.begin(), pairedData.pairs.end());
+	if (pairedData.pairs.size())
+		mergeSort(pairedData.pairs.begin(), pairedData.pairs.end());
 
 	// Step 4:
 	_sortedData = insertPendingElements(pairedData);
@@ -443,8 +444,6 @@ PmergeMe<T, C>::splitPairs(const PairContainer &pairs,
 	ConstPairIterator	nextPairIt = pairs.begin();
 	ConstJacobIterator	jacobIt = jacobsthalSequence.begin();
 
-	std::advance(jacobIt, 2);
-
 	while (jacobIt != jacobsthalSequence.end() && pairIt != pairs.end())
 	{
 		Container			group;
@@ -495,10 +494,8 @@ PmergeMe<T, C>::generateJacobsthalSequence(const size_t size)
 {
 	JacobsthalContainer				jacobsthalSequence;
 
-	if (size >= 1)
-		jacobsthalSequence.push_back(0);
-	if (size >= 2)
-		jacobsthalSequence.push_back(1);
+	if (size <= 2)
+		return (jacobsthalSequence);
 
 	size_t	a = 0;
 	size_t	b = 1;
