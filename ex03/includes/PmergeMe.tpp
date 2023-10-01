@@ -266,8 +266,7 @@ void	PmergeMe<T, C>::fordJohnsonSort(void)
 	mergeSort(pairedData.pairs.begin(), pairedData.pairs.end());
 
 	// Step 4:
-	Container	mainChain;
-	Container	pendingElements;
+	_sortedData = insertPendingElements(pairedData);
 
 	/* ******************** */
 	stopTimer();
@@ -312,7 +311,7 @@ PmergeMe<T, C>::generatePairs(const Container &container)
 
 /*
 	Step 2:
-		- Sort each pair into [a, b] pairs where the smallest value of the pair is put first.
+		- Sort each pair into [a, b] pairs where the highest value of the pair is put first.
 		- This uses [n / 2] comparaisons.
 */
 
@@ -321,7 +320,7 @@ void
 PmergeMe<T, C>::sortPairs(PairContainer &pairs)
 {
 	for (PairIterator pairIt = pairs.begin(); pairIt != pairs.end(); pairIt++)
-		if (pairIt->first > pairIt->second)
+		if (pairIt->first < pairIt->second)
 			std::swap(pairIt->first, pairIt->second);
 }
 
@@ -384,6 +383,46 @@ PmergeMe<T, C>::merge(PairIterator begin, PairIterator middle, PairIterator end)
 			the Jacobsthal sequence who match (2^x - 1) values. BinarySearch uses
 			the same number of comparisons for 2^x  than 2^(x + 1) - 1 elements.
 */
+
+template <typename T, template <typename, typename> class C>
+typename PmergeMe<T, C>::Container
+PmergeMe<T, C>::insertPendingElements(const t_pairedData &pairedData)
+{
+	Container			mainChain;
+	Container			pendingElements;
+
+	splitPairs(pairedData, mainChain, pendingElements);
+
+	JacobsthalContainer	jacobsthalSequence = generateJacobsthalSequence(mainChain.size());
+
+	return (mainChain);
+}
+
+template <typename T, template <typename, typename> class C>
+void
+PmergeMe<T, C>::splitPairs(const t_pairedData &pairedData,
+	Container &mainChain, Container &pendingElements)
+{
+	ConstPairIterator	pairIt = pairedData.pairs.begin();
+
+	// No comparaison is needed to insert the first element. We know b >= a.
+	if (pairIt != pairedData.pairs.end())
+	{
+		mainChain.push_back(pairIt->second);
+		mainChain.push_back(pairIt->first);
+		pairIt++;
+	}
+
+	for (; pairIt != pairedData.pairs.end(); pairIt++)
+	{
+		mainChain.push_back(pairIt->first);
+		pendingElements.push_back(pairIt->second);
+	}
+
+	// Add the straggler at the end of pending Elements.
+	if (pairedData.hasStraggler)
+		pendingElements.push_back(pairedData.straggler);
+}
 
 template <typename T, template <typename, typename> class C>
 typename PmergeMe<T, C>::Iterator
