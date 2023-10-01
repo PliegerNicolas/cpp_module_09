@@ -390,10 +390,25 @@ PmergeMe<T, C>::insertPendingElements(const t_pairedData &pairedData)
 {
 	Container			mainChain;
 	Container			pendingElements;
+	size_t				i = 1;
 
+	// Populate mainChain et pendingElements
 	splitPairs(pairedData, mainChain, pendingElements);
 
+	// Generate jacobsthal sequence based on mainChain size.
 	JacobsthalContainer	jacobsthalSequence = generateJacobsthalSequence(mainChain.size());
+	ConstJacobIterator	jacobIt = jacobsthalSequence.begin();
+	std::advance(jacobIt, 3);
+
+	for (Iterator it = pendingElements.begin(); it != pendingElements.end(); it++)
+	{
+		if (i >= *jacobIt)
+		{
+			jacobIt++;
+			i = 1;
+		}
+		i++;
+	}
 
 	return (mainChain);
 }
@@ -409,6 +424,7 @@ PmergeMe<T, C>::splitPairs(const t_pairedData &pairedData,
 	if (pairIt != pairedData.pairs.end())
 	{
 		mainChain.push_back(pairIt->second);
+		pendingElements.push_back(pairIt->second);
 		mainChain.push_back(pairIt->first);
 		pairIt++;
 	}
