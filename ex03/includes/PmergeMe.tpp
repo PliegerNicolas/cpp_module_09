@@ -393,6 +393,43 @@ PmergeMe<T, C>::insertPendingElements(const t_pairedData &pairedData)
 
 	splitPairs(pairedData.pairs, mainChain, pendingChain);
 
+	ConstGroupIterator	groupIt = pendingChain.begin();
+	size_t				groupOffset = 0;
+
+	// First insert doesn't need any comparator. We know b1 <= a1.
+	mainChain.insert(mainChain.begin(), *groupIt->begin());
+	groupIt++;
+	groupOffset++;
+
+	while (groupIt != pendingChain.end())
+	{
+		groupOffset += groupIt->size();
+
+		for (ConstIterator it = groupIt->begin(); it != groupIt->end(); it++)
+		{
+			const T		&target = *it;
+
+			Iterator	searchStart = mainChain.begin();
+			Iterator	searchEnd = mainChain.begin();
+			std::advance(searchEnd, groupOffset);
+
+			Iterator	insertionPos = binarySearch(searchStart, searchEnd, target);
+			mainChain.insert(insertionPos, target);
+		}
+
+		groupIt++;
+	}
+
+	if (pairedData.hasStraggler)
+	{
+		const T		&target = pairedData.straggler;
+		Iterator	searchStart = mainChain.begin();
+		Iterator	searchEnd = mainChain.end();
+
+		Iterator	insertionPos = binarySearch(searchStart, searchEnd, target);
+		mainChain.insert(insertionPos, target);
+	}
+
 	return (mainChain);
 }
 
