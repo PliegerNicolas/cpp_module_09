@@ -254,45 +254,44 @@ void	PmergeMe<T, C>::fordJohnsonSort(void)
 		_sortedData.clear();
 
 	startTimer();
+	/* ******************** */
 
-	// Step 1
-	t_pairedData	pairedData = generateOrderedPairs(_unsortedData);
+	// Step 1:
+	t_pairedData	pairedData = generatePairs(_unsortedData);
 
-	// Step 2
+	// Step 2:
+	sortPairs(pairedData.pairs);
+
+	//Step 3:
+	mergeSort(pairedData.pairs.begin(), pairedData.pairs.end());
+
+	// Step 4:
 	Container	mainChain;
 	Container	pendingElements;
 
-	recursivePairSort(pairedData, mainChain, pendingElements);
-
-	// Step 3
-	insertPendingElements(mainChain, pendingElements);
-
+	/* ******************** */
 	stopTimer();
 }
 
 /*
 	Step 1:
-		- Split the collection in n/2 pairs of 2 elements.
-		-  Order these pair's elements pairwise (highest value as first,
-			smallest value as second, it's an arbitrary choice).
-		- If the number of elements is odd, put the last element on the side.
-			It isn't paired with any element and it will be considered at the
-			end of the list. That element is called the straggler.
+		- Groups the unsorted list into pairs. If the list is odd, the last
+			element is left unpaired. It will be called the straggler.
 */
+
 template <typename T, template <typename, typename> class C>
 typename PmergeMe<T, C>::t_pairedData
-PmergeMe<T, C>::generateOrderedPairs(const Container &container)
+PmergeMe<T, C>::generatePairs(const Container &container)
 {
 	t_pairedData	pairedData;
 	ConstIterator	it = container.begin();
-	ConstIterator	end = container.end();
+	ConstIterator	endIt = container.end();
 
-	// Isolate straggler if odd number of values.
 	if (container.size() % 2 != 0)
 	{
 		pairedData.hasStraggler = true;
 		pairedData.straggler = container.back();
-		end--;
+		endIt--;
 	}
 	else
 	{
@@ -300,66 +299,57 @@ PmergeMe<T, C>::generateOrderedPairs(const Container &container)
 		pairedData.straggler = T();
 	}
 
-	// Fill the pairedData container, sorting the pairs internally.
-	while (it != end)
+	while (it != endIt)
 	{
-		const T	&first = *it;
-		std::advance(it, 1);
-		const T	&second = *it;
-		std::advance(it, 1);
+		const T	&first = *it++;
+		const T	&second = *it++;
 
-		if (first > second)
-			pairedData.pairs.push_back(std::pair<T, T>(first, second));
-		else
-			pairedData.pairs.push_back(std::pair<T, T>(second, first));
+		pairedData.pairs.push_back(std::pair<T, T>(first, second));
 	}
+
 	return (pairedData);
 }
 
 /*
 	Step 2:
-		- Recursivly sort the pairs of elements by their highest value.
-		- The straggler is isolated and considered as if at the end of the
-			pairs collection.
-		- The highest values of the sorted pairs form the 'main chain' and
-			the smallest the 'pending elements'. In our situation we know
-			that mainChain[i] <= pendingElements[i].
+		- Sort each pair into [a, b] pairs where the smallest value of the pair is put first.
+		- This uses [n / 2] comparaisons.
+*/
+
+template <typename T, template <typename, typename> class C>
+void
+PmergeMe<T, C>::sortPairs(PairContainer &pairs)
+{
+	for (PairIterator pairIt = pairs.begin(); pairIt != pairs.end(); pairIt++)
+		if (pairIt->first > pairIt->second)
+			std::swap(pairIt->first, pairIt->second);
+}
+
+/*
+	Step 3:
+		- Sort the pairs recursively based on the a (smallest value) of each pair.
+			The pairs would become {[a1, b1], [a2, b2], ...}.
+		- If there is a straggler, it will be considered as last element.
 */
 template <typename T, template <typename, typename> class C>
-void	PmergeMe<T, C>::recursivePairSort(t_pairedData &pairedData,
-	Container &mainChain, Container &pendingElements)
+void
+PmergeMe<T, C>::mergeSort(PairIterator begin, PairIterator end)
 {
-	// Recursivly sort the pairs, excluding the straggler.
-	mergeSort(pairedData.pairs.begin(), pairedData.pairs.end());
+	if (std::distance(begin, end) <= 1)
+		return ;
 
-	// Insert at the start of the mainChain the element that was paired
-	// with he first and smallest element of the biggest values of the
-	// pairs.
-	ConstPairIterator	it = pairedData.pairs.begin();
+	PairIterator	middle = begin;
+	std::advance(middle, std::distance(begin, end) / 2);
 
-	if (it != pairedData.pairs.end())
-	{
-		mainChain.push_back(pairedData.pairs.begin()->second);
-		mainChain.push_back(it->first);
-		it++;
-	}
+	mergeSort(begin, middle);
+	mergeSort(middle, end);
 
-	// mainChain is sorted, built with the highest values of the pairs.
-	// pendingElements are the unsorted elements left.
-	while (it != pairedData.pairs.end())
-	{
-		mainChain.push_back(it->first);
-		pendingElements.push_back(it->second);
-		it++;
-	}
-
-	// Insert the straggler if it exists at the end of pendingElements
-	if (pairedData.hasStraggler)
-		pendingElements.push_back(pairedData.straggler);
+	merge(begin, middle, end);
 }
 
 template <typename T, template <typename, typename> class C>
-void	PmergeMe<T, C>::merge(PairIterator begin, PairIterator middle, PairIterator end)
+void
+PmergeMe<T, C>::merge(PairIterator begin, PairIterator middle, PairIterator end)
 {
 	PairContainer	left(begin, middle);
 	PairContainer	right(middle, end);
@@ -383,85 +373,17 @@ void	PmergeMe<T, C>::merge(PairIterator begin, PairIterator middle, PairIterator
 		*currentIt++ = *rightIt++;
 }
 
-template <typename T, template <typename, typename> class C>
-void	PmergeMe<T, C>::mergeSort(PairIterator begin, PairIterator end)
-{
-	if (std::distance(begin, end) <= 1)
-		return ;
-
-	PairIterator	middle;
-
-	middle = begin;
-	std::advance(middle, std::distance(begin, end) / 2);
-
-	mergeSort(begin, middle);
-	mergeSort(middle, end);
-
-	merge(begin, middle, end);
-}
-
 /*
-	Step 3:
-		- We insert the pendingElements into the MainChain in a way that
-			ensures that the size of the insertion area is a (2^x - 1) as
-			often as possible.
-		- We know that pendingElements[1] is <= to mainChain[1]. We can
-			insert it directly.
-		- Jacobsthal's sequence provides a sequence of numbers where each
-			number is one less than a power of two. These numbers are used
-			to determine the sizes of groups into which the uninserted
-			elements are partitioned.
+	Step 4:
+		- The a elements of the pairs form the mainChain. The b elements form
+			the pendingElements.
+		- The mainChain is composed of [n / 2] elements and already sorted.
+		- The pendingElements could be inserted via BinarySearch. But different
+			b have different worst-case cost of comparaisons during BinarySearch
+			insertion. We can minimize that cost by following the order based on
+			the Jacobsthal sequence who match (2^x - 1) values. BinarySearch uses
+			the same number of comparisons for 2^x  than 2^(x + 1) - 1 elements.
 */
-template <typename T, template <typename, typename> class C>
-void	PmergeMe<T, C>::insertPendingElements(Container &mainChain, Container &pendingElements)
-{
-	GroupContainer		groups = generateInsertionGroups(mainChain);
-
-	for (Iterator pendIt = pendingElements.begin(); pendIt != pendingElements.end(); pendIt++)
-	{
-		const T	&target = *pendIt;
-
-		for (GroupIterator groupsIt = groups.begin(); groupsIt != groups.end(); groupsIt++)
-		{
-			Container	&currentGroup = *groupsIt;
-
-			if (target <= currentGroup.front())
-			{
-				Iterator	insertionPos = higherboundBinarySearch(currentGroup, target);
-
-				currentGroup.insert(insertionPos, target);
-				break ;
-			}
-		}
-	}
-	std::cout << 10 << std::endl;
-}
-
-template <typename T, template <typename, typename> class C>
-typename PmergeMe<T, C>::GroupContainer
-PmergeMe<T, C>::generateInsertionGroups(const Container &mainChain)
-{
-	GroupContainer		groups;
-	JacobsthalContainer	jacobsthalSequence = generateJacobsthalSequence(mainChain.size());
-
-	ConstIterator	it = mainChain.begin();
-	ConstIterator	jacobIt = jacobsthalSequence.begin();
-
-	std::advance(jacobIt, 3);
-	while (it != mainChain.end() && jacobIt != jacobsthalSequence.end())
-	{
-		Container		group;
-		const size_t	groupSize = *jacobIt;
-
-		for (size_t i = 0; i < groupSize && it != mainChain.end(); i++)
-			group.push_back(*it++);
-
-		std::reverse(group.begin(), group.end());
-		groups.push_back(group);
-		jacobIt++;
-	}
-	return (groups);
-}
 
 template <typename T, template <typename, typename> class C>
 typename PmergeMe<T, C>::JacobsthalContainer
@@ -487,136 +409,3 @@ PmergeMe<T, C>::generateJacobsthalSequence(const size_t size)
 	}
 	return (jacobsthalSequence);
 }
-
-template <typename T, template <typename, typename> class C>
-typename PmergeMe<T, C>::Iterator
-PmergeMe<T, C>::higherboundBinarySearch(Container &container, const T &target)
-{
-	Iterator	left = container.begin();
-	Iterator	right = container.end();
-
-	while (std::distance(left, right) > 0)
-	{
-		Iterator	middle;
-
-		middle = left;
-		std::advance(middle, (std::distance(left, right) / 2));
-		if (*middle > target)
-		{
-			left = middle;
-			std::advance(left, 1);
-		}
-		else
-			right = middle;
-	}
-	return (left);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-template <typename T, template <typename, typename> class C>
-void	PmergeMe<T, C>::insertPendingElements(t_pairedData &pairedData, GroupContainer &groups)
-{
-	for (PairIterator pairIt = pairedData.pairs.begin(); pairIt != pairedData.pairs.end(); pairIt++)
-	{
-		const T	&target = pairIt->second;
-
-		for (GroupIterator groupsIt = groups.begin(); groupsIt != groups.end(); groupsIt++)
-		{
-			Container	&currentGroup = *groupsIt;
-
-			if (target >= currentGroup.front() && target <= currentGroup.back())
-			{
-				Iterator	insertionPos = higherboundBinarySearch(currentGroup, target);
-				currentGroup.insert(insertionPos, target);
-				break ;
-			}
-		}
-	}
-}
-
-template <typename T, template <typename, typename> class C>
-typename PmergeMe<T, C>::GroupContainer
-PmergeMe<T, C>::generateInsertionGroups(const Container &S)
-{
-	GroupContainer		groups;
-	JacobsthalContainer	jacobsthalSequence = generateJacobsthalSequence(S.size());
-
-	ConstIterator	it = S.begin();
-	ConstIterator	jacobIt = jacobsthalSequence.begin();
-
-	std::advance(jacobIt, 3);
-	while (it != S.end() && jacobIt != jacobsthalSequence.end())
-	{
-		Container		group;
-		const size_t	groupSize = *jacobIt;
-
-		for (size_t i = 0; i < groupSize && it != S.end(); i++)
-			group.push_back(*it++);
-
-		//std::reverse(group.begin(), group.end());
-		groups.push_back(group);
-		jacobIt++;
-	}
-	return (groups);
-}
-
-template <typename T, template <typename, typename> class C>
-typename PmergeMe<T, C>::Iterator
-PmergeMe<T, C>::higherboundBinarySearch(Container &container, const T &target)
-{
-	Iterator	left = container.begin();
-	Iterator	right = container.end();
-
-	while (std::distance(left, right) > 0)
-	{
-		Iterator	middle;
-
-		middle = left;
-		std::advance(middle, (std::distance(left, right) / 2));
-		if (*middle < target)
-		{
-			left = middle;
-			std::advance(left, 1);
-		}
-		else
-			right = middle;
-	}
-	return (left);
-}
-
-template <typename T, template <typename, typename> class C>
-typename PmergeMe<T, C>::JacobsthalContainer
-PmergeMe<T, C>::generateJacobsthalSequence(const size_t size)
-{
-	JacobsthalContainer				jacobsthalSequence;
-
-	if (size >= 1)
-		jacobsthalSequence.push_back(0);
-	if (size >= 2)
-		jacobsthalSequence.push_back(1);
-
-	size_t	a = 0;
-	size_t	b = 1;
-	size_t	next;
-
-	while (a < size)
-	{
-		next = (a * 2) + b;
-		jacobsthalSequence.push_back(next);
-		a = b;
-		b = next;
-	}
-	return (jacobsthalSequence);
-}
-*/
