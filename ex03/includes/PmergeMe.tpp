@@ -387,19 +387,15 @@ PmergeMe<T, C>::merge(PairIterator begin, PairIterator middle, PairIterator end)
 
 template <typename T, template <typename, typename> class C>
 typename PmergeMe<T, C>::Iterator
-PmergeMe<T, C>::binarySearch(Container &container, const T &target)
+PmergeMe<T, C>::binarySearch(Iterator &left, Iterator &right, const T &target)
 {
 	// Lowerbound binary search
 
-	Iterator	left = container.begin();
-	Iterator	right = container.end();
-
 	while (std::distance(left, right) > 0)
 	{
-		Iterator	middle;
-
-		middle = left;
+		Iterator	middle = left;
 		std::advance(middle, (std::distance(left, right) / 2));
+
 		if (*middle > target)
 		{
 			left = middle;
