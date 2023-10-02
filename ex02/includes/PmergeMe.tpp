@@ -418,6 +418,7 @@ PmergeMe<T, C>::insertPendingElements(const t_pairedData &pairedData)
 
 	for (; groupIt != pendingChain.end(); groupIt++)
 	{
+		// The Ax bound for insertion is maybe not perfectly optimized.
 		groupOffset += groupIt->size();
 
 		for(ConstIterator it = groupIt->begin(); it != groupIt->end(); it++, groupOffset++)
