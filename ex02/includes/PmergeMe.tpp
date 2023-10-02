@@ -4,25 +4,21 @@
 
 /* Constructors & Destructors */
 // Default constructor
-template <typename T, template <typename, typename> class Container>
-PmergeMe<T, Container>::PmergeMe(void):
+template <typename T, template <typename, typename> class C>
+PmergeMe<T, C>::PmergeMe(void):
 	_startTime(0),
 	_endTime(0)
 {
-	if (DEBUG)
-	{
-		std::cout << CYAN;
-		std::cout << "PmergeMe : default constructor called";
-		std::cout << WHITE << std::endl;
-	}
-
-	_straggler.has = false;
-	_straggler.value = T();
+	if (!DEBUG)
+		return ;
+	std::cout << CYAN;
+	std::cout << "PmergeMe : default constructor called";
+	std::cout << WHITE << std::endl;
 }
 
 // Type constructor
-template <typename T, template <typename, typename> class Container>
-PmergeMe<T, Container>::PmergeMe(const std::string &str):
+template <typename T, template <typename, typename> class C>
+PmergeMe<T, C>::PmergeMe(const std::string &str):
 	_startTime(0),
 	_endTime(0)
 {
@@ -32,16 +28,12 @@ PmergeMe<T, Container>::PmergeMe(const std::string &str):
 		std::cout << "PmergeMe : constructor with str parameter called";
 		std::cout << WHITE << std::endl;
 	}
-
-	_straggler.has = false;
-	_straggler.value = T();
-
 	setUnsortedData(str);
 }
 
 // Type constructor
-template <typename T, template <typename, typename> class Container>
-PmergeMe<T, Container>::PmergeMe(const int &argc, char **argv):
+template <typename T, template <typename, typename> class C>
+PmergeMe<T, C>::PmergeMe(const int &argc, char **argv):
 	_startTime(0),
 	_endTime(0)
 {
@@ -51,35 +43,27 @@ PmergeMe<T, Container>::PmergeMe(const int &argc, char **argv):
 		std::cout << "PmergeMe : constructor with argc and argv parameters called";
 		std::cout << WHITE << std::endl;
 	}
-
-	_straggler.has = false;
-	_straggler.value = T();
-
 	setUnsortedData(argc, argv);
 }
 
 // Copy constructor
-template <typename T, template <typename, typename> class Container>
-PmergeMe<T, Container>::PmergeMe(const PmergeMe &other):
+template <typename T, template <typename, typename> class C>
+PmergeMe<T, C>::PmergeMe(const PmergeMe &other):
 	_unsortedData(other._unsortedData),
 	_sortedData(other._sortedData),
-	_pairedData(other._pairedData),
-	_pendingData(other._pendingData),
 	_startTime(other._startTime),
-	_endTime(other._endTime),
-	_straggler(other._straggler)
+	_endTime(other._endTime)
 {
-	if (DEBUG)
-	{
-		std::cout << CYAN;
-		std::cout << "PmergeMe : copy constructor called";
-		std::cout << WHITE << std::endl;
-	}
+	if (!DEBUG)
+		return ;
+	std::cout << CYAN;
+	std::cout << "PmergeMe : copy constructor called";
+	std::cout << WHITE << std::endl;
 }
 
 // Assignment operator
-template <typename T, template <typename, typename> class Container>
-PmergeMe<T, Container>	&PmergeMe<T, Container>::operator=(const PmergeMe &other)
+template <typename T, template <typename, typename> class C>
+PmergeMe<T, C>	&PmergeMe<T, C>::operator=(const PmergeMe &other)
 {
 	if (DEBUG)
 	{
@@ -92,25 +76,22 @@ PmergeMe<T, Container>	&PmergeMe<T, Container>::operator=(const PmergeMe &other)
 	{
 		_unsortedData = other._unsortedData;
 		_sortedData = other._sortedData;
-		_pairedData = other._pairedData;
-		_pendingData = other._pendingData;
 		_startTime = other._startTime;
 		_endTime = other._endTime;
-		_straggler = other._straggler;
 	}
+
 	return (*this);
 }
 
 // Default destructor
-template <typename T, template <typename, typename> class Container>
-PmergeMe<T, Container>::~PmergeMe(void)
+template <typename T, template <typename, typename> class C>
+PmergeMe<T, C>::~PmergeMe(void)
 {
-	if (DEBUG)
-	{
-		std::cout << CYAN;
-		std::cout << "PmergeMe : default destructor called";
-		std::cout << WHITE << std::endl;
-	}
+	if (!DEBUG)
+		return ;
+	std::cout << CYAN;
+	std::cout << "PmergeMe : default destructor called";
+	std::cout << WHITE << std::endl;
 }
 
 /* Member functions */
@@ -118,22 +99,24 @@ PmergeMe<T, Container>::~PmergeMe(void)
 // ::Getters
 
 // getUnsortedData()
-template <typename T, template <typename, typename> class Container>
-const Container<T, typename PmergeMe<T, Container>::Alloc>	&PmergeMe<T, Container>::getUnsortedData(void) const
+template <typename T, template <typename, typename> class C>
+const typename PmergeMe<T, C>::Container&
+PmergeMe<T, C>::getUnsortedData(void) const
 {
 	return (_unsortedData);
 }
 
 // getSortedData()
-template <typename T, template <typename, typename> class Container>
-const Container<T, typename PmergeMe<T, Container>::Alloc>	&PmergeMe<T, Container>::getSortedData(void) const
+template <typename T, template <typename, typename> class C>
+const typename PmergeMe<T, C>::Container&
+PmergeMe<T, C>::getSortedData(void) const
 {
 	return (_sortedData);
 }
 
 // getElapsedTime()
-template <typename T, template <typename, typename> class Container>
-double	PmergeMe<T, Container>::getElapsedTime(void) const
+template <typename T, template <typename, typename> class C>
+double	PmergeMe<T, C>::getElapsedTime(void) const
 {
 	// In milliseconds.
 	return (static_cast<double>(_endTime - _startTime) * 1000 / CLOCKS_PER_SEC);
@@ -142,8 +125,8 @@ double	PmergeMe<T, Container>::getElapsedTime(void) const
 // ::Setters
 
 // setUnsortedData()
-template <typename T, template <typename, typename> class Container>
-void	PmergeMe<T, Container>::setUnsortedData(const std::string &str)
+template <typename T, template <typename, typename> class C>
+void	PmergeMe<T, C>::setUnsortedData(const std::string &str)
 {
 	std::istringstream	iss;
 	T					val;
@@ -155,7 +138,7 @@ void	PmergeMe<T, Container>::setUnsortedData(const std::string &str)
 	iss.str(str);
 	while (iss >> val)
 		_unsortedData.push_back(val);
-	
+
 	if (!iss.eof())
 	{
 		_unsortedData.clear();
@@ -168,8 +151,8 @@ void	PmergeMe<T, Container>::setUnsortedData(const std::string &str)
 }
 
 // setUnsortedData()
-template <typename T, template <typename, typename> class Container>
-void	PmergeMe<T, Container>::setUnsortedData(const int &argc, char **argv)
+template <typename T, template <typename, typename> class C>
+void	PmergeMe<T, C>::setUnsortedData(const int &argc, char **argv)
 {
 	std::istringstream	iss;
 	T					val;
@@ -200,8 +183,8 @@ void	PmergeMe<T, Container>::setUnsortedData(const int &argc, char **argv)
 // :Other
 
 // printUnsortedData()
-template <typename T, template <typename, typename> class Container>
-const std::string	PmergeMe<T, Container>::printUnsortedData(void) const
+template <typename T, template <typename, typename> class C>
+const std::string	PmergeMe<T, C>::printUnsortedData(void) const
 {
 	std::stringstream	ss;
 	ConstIterator		it;
@@ -218,8 +201,8 @@ const std::string	PmergeMe<T, Container>::printUnsortedData(void) const
 }
 
 // printSortedData()
-template <typename T, template <typename, typename> class Container>
-const std::string	PmergeMe<T, Container>::printSortedData(void) const
+template <typename T, template <typename, typename> class C>
+const std::string	PmergeMe<T, C>::printSortedData(void) const
 {
 	std::stringstream	ss;
 	ConstIterator		it;
@@ -235,27 +218,6 @@ const std::string	PmergeMe<T, Container>::printSortedData(void) const
 	return (ss.str());
 }
 
-// fordJohnsonSort()
-template <typename T, template <typename, typename> class Container>
-void	PmergeMe<T, Container>::fordJohnsonSort(void)
-{
-
-	startTimer();
-
-	// Step 1
-	generatePairs();
-	// Step 2
-	sortPairs();
-	// Step 3
-	mergeSort(_pairedData.begin(), _pairedData.end());
-	// Step 4
-	splitPairs();
-	// Step 5
-	insertPendingData();
-
-	stopTimer();
-}
-
 /** Protected **/
 
 /* Constructors & Destructors */
@@ -267,68 +229,115 @@ void	PmergeMe<T, Container>::fordJohnsonSort(void)
 /* Member functions */
 
 // startTimer()
-template <typename T, template <typename, typename> class Container>
-void	PmergeMe<T, Container>::startTimer(void)
+template <typename T, template <typename, typename> class C>
+void	PmergeMe<T, C>::startTimer(void)
 {
 	_startTime = clock();
 }
 
 // stopTimer()
-template <typename T, template <typename, typename> class Container>
-void	PmergeMe<T, Container>::stopTimer(void)
+template <typename T, template <typename, typename> class C>
+void	PmergeMe<T, C>::stopTimer(void)
 {
 	_endTime = clock();
 }
 
-// Step 1
+/* ************************************************************************** */
+/* *               Ford-Johnson Merge Insertion sort Algorythm              * */
+/* ************************************************************************** */
 
-// generatePairs()
-template <typename T, template <typename, typename> class Container>
-void	PmergeMe<T, Container>::generatePairs(void)
+// fordJohnsonSort()
+template <typename T, template <typename, typename> class C>
+void	PmergeMe<T, C>::fordJohnsonSort(void)
 {
-	ConstIterator	it = _unsortedData.begin();
-	ConstIterator	it_end = _unsortedData.end();
+	if (_sortedData.size() > 0)
+		_sortedData.clear();
 
-	if (_unsortedData.size() % 2 != 0)
+	startTimer();
+	/* ******************** */
+
+	// Step 1:
+	t_pairedData	pairedData = generatePairs(_unsortedData);
+
+	// Step 2:
+	sortPairs(pairedData.pairs);
+
+	//Step 3:
+	if (pairedData.pairs.size())
+		mergeSort(pairedData.pairs.begin(), pairedData.pairs.end());
+
+	// Step 4:
+	_sortedData = insertPendingElements(pairedData);
+
+	/* ******************** */
+	stopTimer();
+}
+
+/*
+	Step 1:
+		- Groups the unsorted list into pairs. If the list is odd, the last
+			element is left unpaired. It will be called the straggler.
+*/
+
+template <typename T, template <typename, typename> class C>
+typename PmergeMe<T, C>::t_pairedData
+PmergeMe<T, C>::generatePairs(const Container &container)
+{
+	t_pairedData	pairedData;
+	ConstIterator	it = container.begin();
+	ConstIterator	endIt = container.end();
+
+	if (container.size() % 2 != 0)
 	{
-		_straggler.has = true;
-		_straggler.value = _unsortedData.back();
-		it_end--;
+		pairedData.hasStraggler = true;
+		pairedData.straggler = container.back();
+		endIt--;
+	}
+	else
+	{
+		pairedData.hasStraggler = false;
+		pairedData.straggler = T();
 	}
 
-	while (it != it_end)
+	while (it != endIt)
 	{
 		const T	&first = *it++;
 		const T	&second = *it++;
-		_pairedData.push_back(std::pair<T, T>(first, second));
+
+		pairedData.pairs.push_back(std::pair<T, T>(first, second));
 	}
+
+	return (pairedData);
 }
 
-// Step 2
+/*
+	Step 2:
+		- Sort each pair into [a, b] pairs where the highest value of the pair is put first.
+		- This uses [n / 2] comparaisons.
+*/
 
-// sortPairs()
-template <typename T, template <typename, typename> class Container>
-void	PmergeMe<T, Container>::sortPairs(void)
+template <typename T, template <typename, typename> class C>
+void
+PmergeMe<T, C>::sortPairs(PairContainer &pairs)
 {
-	PairIterator	it = _pairedData.begin();
-
-	while (it != _pairedData.end())
-	{
-		if (it->first < it->second)
-			std::swap(it->first, it->second);
-		it++;
-	}
+	for (PairIterator pairIt = pairs.begin(); pairIt != pairs.end(); pairIt++)
+		if (pairIt->first < pairIt->second)
+			std::swap(pairIt->first, pairIt->second);
 }
 
-// Step 3
-
-// mergeSort()
-template <typename T, template <typename, typename> class Container>
-void	PmergeMe<T, Container>::mergeSort(PairIterator begin, PairIterator end)
+/*
+	Step 3:
+		- Sort the pairs recursively based on the a (smallest value) of each pair.
+			The pairs would become {[a1, b1], [a2, b2], ...}.
+		- If there is a straggler, it will be considered as last element.
+*/
+template <typename T, template <typename, typename> class C>
+void
+PmergeMe<T, C>::mergeSort(PairIterator begin, PairIterator end)
 {
 	if (std::distance(begin, end) <= 1)
 		return ;
-	
+
 	PairIterator	middle = begin;
 	std::advance(middle, std::distance(begin, end) / 2);
 
@@ -338,12 +347,12 @@ void	PmergeMe<T, Container>::mergeSort(PairIterator begin, PairIterator end)
 	merge(begin, middle, end);
 }
 
-// merge()
-template <typename T, template <typename, typename> class Container>
-void	PmergeMe<T, Container>::merge(PairIterator begin, PairIterator middle, PairIterator end)
+template <typename T, template <typename, typename> class C>
+void
+PmergeMe<T, C>::merge(PairIterator begin, PairIterator middle, PairIterator end)
 {
-	Container<std::pair<T, T>, std::allocator<std::pair<T, T> > >	left(begin, middle);
-	Container<std::pair<T, T>, std::allocator<std::pair<T, T> > >	right(middle, end);
+	PairContainer	left(begin, middle);
+	PairContainer	right(middle, end);
 
 	PairIterator	leftIt = left.begin();
 	PairIterator	rightIt = right.begin();
@@ -364,100 +373,127 @@ void	PmergeMe<T, Container>::merge(PairIterator begin, PairIterator middle, Pair
 		*currentIt++ = *rightIt++;
 }
 
-// Step 4
-
-// splitPairs()
-template <typename T, template <typename, typename> class Container>
-void	PmergeMe<T, Container>::splitPairs(void)
+/*
+	Step 4:
+		- The a elements of the pairs form the mainChain. The b elements form
+			the pendingElements.
+		- The mainChain is composed of [n / 2] elements and already sorted.
+		- The pendingElements could be inserted via BinarySearch. But different
+			b have different worst-case cost of comparaisons during BinarySearch
+			insertion. We can minimize that cost by following the order based on
+			the Jacobsthal sequence who match (2^x - 1) values. BinarySearch uses
+			the same number of comparisons for 2^x  than 2^(x + 1) - 1 elements.
+*/
+template <typename T, template <typename, typename> class C>
+typename PmergeMe<T, C>::Container
+PmergeMe<T, C>::insertPendingElements(const t_pairedData &pairedData)
 {
+	Container		mainChain;
+	GroupContainer	pendingChain;
 
-	_sortedData.clear();
-	_pendingData.clear();
+	splitPairs(pairedData.pairs, mainChain, pendingChain);
 
-	if (_pairedData.empty() && !_straggler.has)
+	ConstGroupIterator	groupIt = pendingChain.begin();
+	size_t				groupOffset = 2; // Because b1's inserted is already handled.
+
+	for (; groupIt != pendingChain.end(); groupIt++)
+	{
+		groupOffset += groupIt->size();
+
+		for(ConstIterator it = groupIt->begin(); it != groupIt->end(); it++, groupOffset++)
+		{
+			const T		&target = *it;
+
+			Iterator	searchStart = mainChain.begin();
+			Iterator	searchEnd = mainChain.begin();
+
+			std::advance(searchEnd, groupOffset);
+
+			Iterator	insertionPos = binarySearch(searchStart, searchEnd, target);
+			mainChain.insert(insertionPos, target);
+		}
+	}
+
+	insertStraggler(pairedData, mainChain);
+
+	return (mainChain);
+}
+
+template <typename T, template <typename, typename> class C>
+void
+PmergeMe<T, C>::insertStraggler(const t_pairedData &pairedData, Container &mainChain)
+{
+	if (!pairedData.hasStraggler)
 		return ;
-	
-	PairIterator	it =_pairedData.begin();
 
-	while (it != _pairedData.end())
-	{
-		if (it == _pairedData.begin())
-			_sortedData.push_back(it->second);
-		else
-			_pendingData.push_back(it->second);
-		_sortedData.push_back(it->first);
-		it++;
-	}
+	const T		&target = pairedData.straggler;
+	Iterator	searchStart = mainChain.begin();
+	Iterator	searchEnd = mainChain.end();
 
-	if (_straggler.has)
-	{
-		_pendingData.push_back(_straggler.value);
-		_straggler.has = false;
-		_straggler.value = T();
-	}
-	
-	_pairedData.clear();
+	Iterator	insertionPos = binarySearch(searchStart, searchEnd, target);
+	mainChain.insert(insertionPos, target);
 }
 
-// Step 5
-
-// insertPendingData()
-template <typename T, template <typename, typename> class Container>
-void	PmergeMe<T, Container>::insertPendingData(void)
+template <typename T, template <typename, typename> class C>
+void
+PmergeMe<T, C>::splitPairs(const PairContainer &pairs,
+	Container &mainChain, GroupContainer &pendingChain)
 {
-	Container<Container<T, Alloc>, Alloc2d >	elementGroups;
-	Container<T, Alloc>				currentGroup;
+	JacobsthalContainer	jacobsthalSequence;
+	ConstJacobIterator	jacobIt;
 
-	for (ConstIterator it = _pendingData.begin(); it != _pendingData.end(); it++)
+	ConstPairIterator	pairIt = pairs.begin();
+	ConstPairIterator	nextPairIt;
+
+	// We know the position of b1 because a1 > b1.
+	if (pairIt != pairs.end())
 	{
-		if (currentGroup.empty() || currentGroup.size() + 1 <= (1u << elementGroups.size()))
+		mainChain.push_back(pairIt->second);
+		mainChain.push_back(pairIt->first);
+		pairIt++;
+	}
+
+	jacobsthalSequence = generateJacobsthalSequence(std::distance(pairIt, pairs.end()));
+	jacobIt = jacobsthalSequence.begin();
+
+	// Partition uninserted elements into groups with contiguous indexes.
+	// The sum of size of every two adjacent groups form a sequence of powers of two.
+	// By filling the groups relative to corresponding 'a' value we build :
+	// 2, 2, 6, 10, 22, 42, ... sizes groups.
+	for (; jacobIt != jacobsthalSequence.end() && pairIt != pairs.end(); jacobIt++)
+	{
+		Container	newGroup;
+
+		if (*jacobIt <= pairs.size())
 		{
-			currentGroup.push_back(*it);
+			nextPairIt = pairs.begin();
+			std::advance(nextPairIt, *jacobIt);
 		}
 		else
+			nextPairIt = pairs.end();
+
+		for (; pairIt != pairs.end() && pairIt != nextPairIt; pairIt++)
 		{
-			elementGroups.push_back(currentGroup);
-			currentGroup.clear();
-			currentGroup.push_back(*it);
+			mainChain.push_back(pairIt->first);
+			newGroup.push_back(pairIt->second);
 		}
+
+		std::reverse(newGroup.begin(), newGroup.end());
+		pendingChain.push_back(newGroup);
 	}
-
-	if (!currentGroup.empty())
-		elementGroups.push_back(currentGroup);
-
-	for (Iterator2d groupIt = elementGroups.begin(); groupIt != elementGroups.end(); groupIt++)
-		std::reverse(groupIt->begin(), groupIt->end());
-
-	Container<T, Alloc>	orderedElements;
-
-	for (ConstReverseIterator2d groupIt = elementGroups.rbegin();
-		groupIt != elementGroups.rend(); groupIt++)
-	{
-		orderedElements.insert(orderedElements.end(), groupIt->begin(), groupIt->end());
-	}
-
-	for (ConstIterator elemIt = orderedElements.begin(); elemIt != orderedElements.end(); elemIt++)
-	{
-		Iterator	insertionPos = higherboundBinarySearch(_sortedData, *elemIt);
-		_sortedData.insert(insertionPos, *elemIt);
-	}
-
-	_pendingData.clear();
 }
 
-// higherboundBinarySearch()
-template <typename T, template <typename, typename> class Container>
-typename Container<T, typename PmergeMe<T, Container>::Alloc>::iterator	PmergeMe<T, Container>::higherboundBinarySearch(Container<T, typename PmergeMe<T, Container>::Alloc> &container, const T &target)
+template <typename T, template <typename, typename> class C>
+typename PmergeMe<T, C>::Iterator
+PmergeMe<T, C>::binarySearch(Iterator left, Iterator right, const T &target)
 {
-	Iterator	left = container.begin();
-	Iterator	right = container.end();
+	// Lowerbound binary search
 
 	while (std::distance(left, right) > 0)
 	{
-		Iterator	middle;
-
-		middle = left;
+		Iterator	middle = left;
 		std::advance(middle, (std::distance(left, right) / 2));
+
 		if (*middle < target)
 		{
 			left = middle;
@@ -467,4 +503,24 @@ typename Container<T, typename PmergeMe<T, Container>::Alloc>::iterator	PmergeMe
 			right = middle;
 	}
 	return (left);
+}
+
+template <typename T, template <typename, typename> class C>
+typename PmergeMe<T, C>::JacobsthalContainer
+PmergeMe<T, C>::generateJacobsthalSequence(const size_t size)
+{
+	JacobsthalContainer				jacobsthalSequence;
+
+	size_t	a = 1;
+	size_t	b = 1;
+	size_t	next;
+
+	while (b <= size)
+	{
+		next = (a * 2) + b;
+		jacobsthalSequence.push_back(next);
+		a = b;
+		b = next;
+	}
+	return (jacobsthalSequence);
 }

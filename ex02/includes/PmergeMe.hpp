@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 01:34:04 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/18 03:45:36 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/10/02 04:17:50 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -25,63 +25,70 @@
 #include <deque>
 #include <list>
 
-template <typename T, template <typename, typename> class Container>
+template <typename T, template <typename, typename> class C>
 class	PmergeMe
 {
 	private:
-		/* struct */
-		struct straggler
-		{
-			bool	has;
-			T		value;
-		};
-
+		/* Typdefs */
 		typedef std::allocator<T>								Alloc;
 		typedef std::allocator<std::pair<T, T> >				PairAlloc;
-		typedef std::allocator<Container<T, Alloc> >			Alloc2d;
+		typedef std::allocator<size_t>							JacobsthalAlloc;
+		typedef std::allocator<C<T, Alloc> >					GroupAlloc;
 
-		typedef typename Container<T, Alloc>::iterator			Iterator;
-		typedef typename Container<T, Alloc>::const_iterator	ConstIterator;
-		typedef typename Container<std::pair<T, T>,
-			PairAlloc>::iterator								PairIterator;
-		typedef typename Container<std::pair<T, T>,
-			PairAlloc>::const_iterator							ConstPairIterator;
-		typedef typename Container<Container<T, Alloc>,
-			Alloc2d>::iterator									Iterator2d;
-		typedef typename Container<Container<T, Alloc>,
-			Alloc2d>::const_reverse_iterator					ConstReverseIterator2d;
+		typedef C<T, Alloc>										Container;
+		typedef C<std::pair<T, T>, PairAlloc>					PairContainer;
+		typedef C<size_t, JacobsthalAlloc>						JacobsthalContainer;
+		typedef C<C<T, Alloc>, GroupAlloc>						GroupContainer;
+
+		typedef typename Container::iterator					Iterator;
+		typedef typename Container::const_iterator				ConstIterator;
+		typedef typename PairContainer::iterator				PairIterator;
+		typedef typename PairContainer::const_iterator			ConstPairIterator;
+		typedef typename JacobsthalContainer::iterator			JacobIterator;
+		typedef typename JacobsthalContainer::const_iterator	ConstJacobIterator;
+		typedef typename GroupContainer::iterator				GroupIterator;
+		typedef typename GroupContainer::const_iterator			ConstGroupIterator;
+
+		typedef struct pairedData
+		{
+			PairContainer	pairs;
+			bool			hasStraggler;
+			T				straggler;
+		}	t_pairedData;
 
 		/* Attributs */
-		Container<T, Alloc>						_unsortedData;
-		Container<T, Alloc>						_sortedData;
+		Container	_unsortedData;
+		Container	_sortedData;
 
-		Container<std::pair<T, T>, PairAlloc>	_pairedData;
-		Container<T, Alloc>						_pendingData;
-
-		clock_t									_startTime;
-		clock_t									_endTime;
-		straggler								_straggler;
+		clock_t		_startTime;
+		clock_t		_endTime;
 
 		/* Constructors & Destructors */
 
 		/* Member functions */
 
-		void		startTimer(void);
-		void		stopTimer(void);
+		void				startTimer(void);
+		void				stopTimer(void);
 
 		// Ford-Johnson algorythm
-		// Step 1
-		void		generatePairs(void);
-		// Step 2
-		void		sortPairs(void);
-		// Step 3
-		void		mergeSort(PairIterator begin, PairIterator end);
-		void		merge(PairIterator begin, PairIterator middle, PairIterator end);
-		// Step 4
-		void		splitPairs(void);
-		// Step 5
-		void		insertPendingData(void);
-		Iterator	higherboundBinarySearch(Container<T, Alloc> &container, const T &target);
+
+		// Step1:
+		t_pairedData		generatePairs(const Container &container);
+
+		// Step2:
+		void				sortPairs(PairContainer &pairs);
+
+		// Step3:
+		void				mergeSort(PairIterator begin, PairIterator end);
+		void				merge(PairIterator begin, PairIterator middle, PairIterator end);
+
+		// Step4:
+		Container			insertPendingElements(const t_pairedData &pairedData);
+		void				splitPairs(const PairContainer &pairedData,
+								Container &mainChain, GroupContainer &pendingChain);
+		void				insertStraggler(const t_pairedData &pairedData, Container &mainChain);
+		Iterator			binarySearch(Iterator left, Iterator right, const T &target);
+		JacobsthalContainer	generateJacobsthalSequence(const size_t size);
 
 	protected:
 		/* Attributs */
@@ -99,26 +106,26 @@ class	PmergeMe
 		PmergeMe(const int &argc, char **argv);
 
 		PmergeMe(const PmergeMe &other);
-		PmergeMe    &operator=(const PmergeMe &other);
+		PmergeMe	&operator=(const PmergeMe &other);
 
 		~PmergeMe(void);
 
 		/* Member functions */
 
 		// ::Getters
-		const Container<T, Alloc>	&getUnsortedData(void) const;
-		const Container<T, Alloc>	&getSortedData(void) const;
-		double						getElapsedTime(void) const;
+		const Container		&getUnsortedData(void) const;
+		const Container		&getSortedData(void) const;
+		double				getElapsedTime(void) const;
 
 		// ::Setters
-		void						setUnsortedData(const std::string &str);
-		void						setUnsortedData(const int &argc, char **argv);
+		void				setUnsortedData(const std::string &str);
+		void				setUnsortedData(const int &argc, char **argv);
 
 		// :Other
 
-		const std::string			printUnsortedData(void) const;
-		const std::string			printSortedData(void) const;
-		void						fordJohnsonSort(void);
+		const std::string	printUnsortedData(void) const;
+		const std::string	printSortedData(void) const;
+		void				fordJohnsonSort(void);
 };
 
 #include "PmergeMe.tpp"
