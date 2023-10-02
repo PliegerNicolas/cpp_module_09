@@ -384,7 +384,6 @@ PmergeMe<T, C>::merge(PairIterator begin, PairIterator middle, PairIterator end)
 			the Jacobsthal sequence who match (2^x - 1) values. BinarySearch uses
 			the same number of comparisons for 2^x  than 2^(x + 1) - 1 elements.
 */
-
 template <typename T, template <typename, typename> class C>
 typename PmergeMe<T, C>::Container
 PmergeMe<T, C>::insertPendingElements(const t_pairedData &pairedData)
@@ -395,46 +394,44 @@ PmergeMe<T, C>::insertPendingElements(const t_pairedData &pairedData)
 	splitPairs(pairedData.pairs, mainChain, pendingChain);
 
 	ConstGroupIterator	groupIt = pendingChain.begin();
-	size_t				groupOffset = 0;
+	size_t				groupOffset = 2; // Because b1's inserted is already handled.
 
-	// First insert doesn't need any comparator. We know b1 <= a1.
-	mainChain.insert(mainChain.begin(), *groupIt->begin());
-	groupIt++;
-
-	groupOffset = 2;
-
-	// // // HOW SHOULD I DEFINE WHERE Yi IS POSITIONNED ?!
-
-	while (groupIt != pendingChain.end())
+	for (; groupIt != pendingChain.end(); groupIt++)
 	{
 		groupOffset += groupIt->size();
 
-		for (ConstIterator it = groupIt->begin(); it != groupIt->end(); it++, groupOffset++)
+		for(ConstIterator it = groupIt->begin(); it != groupIt->end(); it++, groupOffset++)
 		{
 			const T		&target = *it;
 
 			Iterator	searchStart = mainChain.begin();
 			Iterator	searchEnd = mainChain.begin();
+
 			std::advance(searchEnd, groupOffset);
 
 			Iterator	insertionPos = binarySearch(searchStart, searchEnd, target);
 			mainChain.insert(insertionPos, target);
 		}
-
-		groupIt++;
 	}
 
-	if (pairedData.hasStraggler)
-	{
-		const T		&target = pairedData.straggler;
-		Iterator	searchStart = mainChain.begin();
-		Iterator	searchEnd = mainChain.end();
-
-		Iterator	insertionPos = binarySearch(searchStart, searchEnd, target);
-		mainChain.insert(insertionPos, target);
-	}
+	insertStraggler(pairedData, mainChain);
 
 	return (mainChain);
+}
+
+template <typename T, template <typename, typename> class C>
+void
+PmergeMe<T, C>::insertStraggler(const t_pairedData &pairedData, Container &mainChain)
+{
+	if (!pairedData.hasStraggler)
+		return ;
+
+	const T		&target = pairedData.straggler;
+	Iterator	searchStart = mainChain.begin();
+	Iterator	searchEnd = mainChain.end();
+
+	Iterator	insertionPos = binarySearch(searchStart, searchEnd, target);
+	mainChain.insert(insertionPos, target);
 }
 
 template <typename T, template <typename, typename> class C>
@@ -442,30 +439,42 @@ void
 PmergeMe<T, C>::splitPairs(const PairContainer &pairs,
 	Container &mainChain, GroupContainer &pendingChain)
 {
-	JacobsthalContainer	jacobsthalSequence = generateJacobsthalSequence(pairs.size());
-	ConstPairIterator	pairIt = pairs.begin();
-	ConstPairIterator	nextPairIt = pairs.begin();
-	ConstJacobIterator	jacobIt = jacobsthalSequence.begin();
+	JacobsthalContainer	jacobsthalSequence;
+	ConstJacobIterator	jacobIt;
 
-	while (jacobIt != jacobsthalSequence.end() && pairIt != pairs.end())
+	ConstPairIterator	pairIt = pairs.begin();
+	ConstPairIterator	nextPairIt;
+
+	// We know the position of b1 because a1 > b1.
+	if (pairIt != pairs.end())
 	{
-		Container			group;
+		mainChain.push_back(pairIt->second);
+		mainChain.push_back(pairIt->first);
+		pairIt++;
+	}
+
+	jacobsthalSequence = generateJacobsthalSequence(std::distance(pairIt, pairs.end()));
+	jacobIt = jacobsthalSequence.begin();
+
+	// Partition uninserted elements into groups with contiguous indexes.
+	// The sum of size of every two adjacent groups form a sequence of powers of two.
+	// By filling the groups relative to corresponding 'a' value we build :
+	// 2, 2, 6, 10, 22, 42, ... sizes groups.
+	for (; jacobIt != jacobsthalSequence.end() && pairIt != pairs.end(); jacobIt++)
+	{
+		Container	newGroup;
 
 		nextPairIt = pairs.begin();
 		std::advance(nextPairIt, *jacobIt);
 
-		while (pairIt != pairs.end() && pairIt != nextPairIt)
+		for (; pairIt != pairs.end() && pairIt != nextPairIt; pairIt++)
 		{
 			mainChain.push_back(pairIt->first);
-			group.push_back(pairIt->second);
-
-			pairIt++;
+			newGroup.push_back(pairIt->second);
 		}
 
-		std::reverse(group.begin(), group.end());
-		pendingChain.push_back(group);
-
-		jacobIt++;
+		std::reverse(newGroup.begin(), newGroup.end());
+		pendingChain.push_back(newGroup);
 	}
 }
 
@@ -497,14 +506,11 @@ PmergeMe<T, C>::generateJacobsthalSequence(const size_t size)
 {
 	JacobsthalContainer				jacobsthalSequence;
 
-	if (size <= 2)
-		return (jacobsthalSequence);
-
-	size_t	a = 0;
+	size_t	a = 1;
 	size_t	b = 1;
 	size_t	next;
 
-	while (a < size)
+	while (b <= size)
 	{
 		next = (a * 2) + b;
 		jacobsthalSequence.push_back(next);

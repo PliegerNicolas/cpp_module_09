@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 01:34:04 by nicolas           #+#    #+#             */
-/*   Updated: 2023/10/01 22:10:51 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/10/02 04:17:50 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -86,7 +86,7 @@ class	PmergeMe
 		Container			insertPendingElements(const t_pairedData &pairedData);
 		void				splitPairs(const PairContainer &pairedData,
 								Container &mainChain, GroupContainer &pendingChain);
-
+		void				insertStraggler(const t_pairedData &pairedData, Container &mainChain);
 		Iterator			binarySearch(Iterator left, Iterator right, const T &target);
 		JacobsthalContainer	generateJacobsthalSequence(const size_t size);
 
