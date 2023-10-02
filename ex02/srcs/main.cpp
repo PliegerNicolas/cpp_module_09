@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/30 13:12:03 by nicolas           #+#    #+#             */
-/*   Updated: 2023/09/30 23:50:30 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/10/02 05:13:07 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "PmergeMe.hpp"
@@ -26,10 +26,9 @@ static bool	verifyArguments(int argc, char **argv)
 }
 
 template <typename Container>
-static void	displayResults(Container &container, const std::string &containerType)
+static void	displayData(Container &container)
 {
-	std::cout << YELLOW << containerType << WHITE << std::endl;
-	std::cout << YELLOW << "{" << WHITE << std::endl;
+	bool	isSorted;
 
 	std::cout << CYAN;
 	std::cout << "	Before:  " << WHITE << container.printUnsortedData();
@@ -38,12 +37,37 @@ static void	displayResults(Container &container, const std::string &containerTyp
 	std::cout << "	After:   " << WHITE << container.printSortedData();
 	std::cout << std::endl;
 
+	isSorted = container.isSorted();
+
+	std::cout << CYAN;
+	std::cout << "	Container is";
+	std::cout << YELLOW;
+	std::cout << (isSorted ? " correctly sorted" : " not correctly sorted");
+	std::cout << CYAN;
+	std::cout << "." << std::endl;
+	std::cout << std::endl;
+}
+
+template <typename Container>
+static void	displayTime(Container &container, const std::string &containerType)
+{
 	std::cout << CYAN << "	Time to process a range of ";
 	std::cout << WHITE << std::setw(5) << container.getUnsortedData().size();
 	std::cout << CYAN << " elements with ";
 	std::cout << WHITE << containerType << CYAN << " : " << WHITE;
 	std::cout << std::setprecision(8) << container.getElapsedTime() << " ms";
 	std::cout << CYAN << "." << WHITE << std::endl;
+}
+
+
+template <typename Container>
+static void	displayResults(Container &container, const std::string &containerType)
+{
+	std::cout << YELLOW << containerType << WHITE << std::endl;
+	std::cout << YELLOW << "{" << WHITE << std::endl;
+
+	displayData(container);
+	displayTime(container, containerType);
 
 	std::cout << YELLOW << "}" << WHITE << std::endl;
 }

@@ -218,6 +218,27 @@ const std::string	PmergeMe<T, C>::printSortedData(void) const
 	return (ss.str());
 }
 
+// isSorted()
+template <typename T, template <typename, typename> class C>
+bool
+PmergeMe<T, C>::isSorted(void) const
+{
+	if (_sortedData.size() <= 1)
+		return (true);
+
+	ConstIterator	it = _sortedData.begin();
+	ConstIterator	nextIt = ++(_sortedData.begin());
+
+	do
+	{
+		if (*it++ > *nextIt++)
+			return (false);
+	}
+	while (nextIt != _sortedData.end());
+
+	return (true);
+}
+
 /** Protected **/
 
 /* Constructors & Destructors */

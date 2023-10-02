@@ -6,7 +6,7 @@
 /*   By: nicolas <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 01:34:04 by nicolas           #+#    #+#             */
-/*   Updated: 2023/10/02 04:17:50 by nicolas          ###   ########.fr       */
+/*   Updated: 2023/10/02 05:00:09 by nicolas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -125,6 +125,8 @@ class	PmergeMe
 
 		const std::string	printUnsortedData(void) const;
 		const std::string	printSortedData(void) const;
+		bool				isSorted(void) const;
+
 		void				fordJohnsonSort(void);
 };
 
