@@ -220,8 +220,7 @@ const std::string	PmergeMe<T, C>::printSortedData(void) const
 
 // isSorted()
 template <typename T, template <typename, typename> class C>
-bool
-PmergeMe<T, C>::isSorted(void) const
+bool	PmergeMe<T, C>::isSorted(void) const
 {
 	if (_sortedData.size() <= 1)
 		return (true);
