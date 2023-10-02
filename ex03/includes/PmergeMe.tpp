@@ -464,8 +464,13 @@ PmergeMe<T, C>::splitPairs(const PairContainer &pairs,
 	{
 		Container	newGroup;
 
-		nextPairIt = pairs.begin();
-		std::advance(nextPairIt, *jacobIt);
+		if (*jacobIt <= pairs.size())
+		{
+			nextPairIt = pairs.begin();
+			std::advance(nextPairIt, *jacobIt);
+		}
+		else
+			nextPairIt = pairs.end();
 
 		for (; pairIt != pairs.end() && pairIt != nextPairIt; pairIt++)
 		{
